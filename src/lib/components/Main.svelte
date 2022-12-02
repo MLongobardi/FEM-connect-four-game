@@ -1,5 +1,5 @@
 <script>
-	import {minimax, didSomeoneWin} from "$scripts/computer-ai.js";
+	import {minimax, didSomeoneWin, getBoardValue} from "$scripts/computer-ai.js";
 	let gameBoard = {
 		table: [
 			[2, 2, 2, 2, 2, 2, 2],
@@ -32,6 +32,9 @@
 			board.depths[move]--;
 			board.currentPlayer = 1 - board.currentPlayer;
 		}
+		console.log("red score: " + getBoardValue(board, 0))
+		console.log("yellow score: " + getBoardValue(board, 1))
+		console.log("--------")
 		return board;
 	}
 
@@ -41,9 +44,11 @@
 	function fillBoard() {
 		if (fillIsRunning) return;
 		fillIsRunning = true;
+		/*
 		if (gameBoard.table[ROWS-1].every((el)=>el==2)) {
 			playerMove(gameBoard, 3)
 		}
+		*/
 		let testInterval = setInterval(() => {
 			let validMoves = getValidMoves(gameBoard);
 			let winner = didSomeoneWin(gameBoard)
@@ -57,10 +62,10 @@
 				}
 			} else {
 				//let randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
-				let randomMove = minMaxedMove(5) //max 5, maybe 6
+				let randomMove = minMaxedMove(4)
 				gameBoard = playerMove(gameBoard, randomMove);
 			}
-		}, 250);
+		}, 300);
 	}
 
 	const ROWS = 6;
@@ -69,6 +74,16 @@
 	function minMaxedMove(algDepth) {
 		return minimax(gameBoard, algDepth, null, null, gameBoard.currentPlayer).move;
 	}
+
+	function testAlgTime(algDepth) {
+		//takes 60 seconds for algDepth = 7 on my pc
+		let before = Date.now();
+		minMaxedMove(algDepth);
+		let after = Date.now();
+		console.log(after - before + " ms")
+	}
+	let checked = false;
+	//testAlgTime(4);
 </script>
 
 <svelte:head>
@@ -92,6 +107,9 @@
 						class="game-cell"
 						on:click={() => {
 							gameBoard = playerMove(gameBoard, i);
+							if (checked) setTimeout(()=>{
+								gameBoard = playerMove(gameBoard, minMaxedMove(4))
+							},100)
 							//cell = (cell+1)%3
 						}}
 					>
@@ -110,6 +128,8 @@
 	<div>
 		<button on:click={resetTable}>reset game</button>
 		<button on:click={fillBoard}>fill board</button>
+		<button on:click={()=>{gameBoard = playerMove(gameBoard, minMaxedMove(4))}}>ai move</button>
+		<label><input type="checkbox" bind:checked id="">play against ai</label>
 	</div>
 </main>
 
