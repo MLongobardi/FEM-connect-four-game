@@ -1,5 +1,8 @@
 <script>
-	import {minimax, didSomeoneWin, getBoardValue} from "$scripts/computer-ai.js";
+	import { getAIMove } from "$scripts/computer-ai.js";
+	import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
+	import { getBoardValue } from "$scripts/heuristics.js";
+
 	let gameBoard = {
 		table: [
 			[2, 2, 2, 2, 2, 2, 2],
@@ -11,86 +14,103 @@
 		],
 		depths: [5, 5, 5, 5, 5, 5, 5],
 		currentPlayer: 0,
+		winInfo: { player: 2, cells: [] },
 	};
 
-	function resetTable() {
+	function resetGame() {
 		gameBoard.table = gameBoard.table.map((row) => row.map(() => 2));
 		gameBoard.depths = gameBoard.depths.map(() => 5);
 		gameBoard.currentPlayer = 0;
-	}
-
-	function getValidMoves(board) {
-		return board.depths.reduce((result, depth, i) => {
-			if (depth >= 0) result = result.concat(i);
-			return result;
-		}, []);
+		gameBoard.winInfo = { player: 2, cells: [] };
 	}
 
 	function playerMove(board, move) {
-		if (board.depths[move] >= 0) {
+		if (board.depths[move] >= 0 && board.winInfo.player == 2) {
 			board.table[board.depths[move]][move] = board.currentPlayer;
 			board.depths[move]--;
 			board.currentPlayer = 1 - board.currentPlayer;
+			isGameOver();
+			if (!AIIsBattling) {
+				isGameOver();
+				console.log("red score: " + getBoardValue(board, 0));
+				console.log("yellow score: " + getBoardValue(board, 1));
+				console.log("--------");
+			}
 		}
-		console.log("red score: " + getBoardValue(board, 0))
-		console.log("yellow score: " + getBoardValue(board, 1))
-		console.log("--------")
 		return board;
 	}
 
 	/*test*/
-	let fillIsRunning = false;
-
-	function fillBoard() {
-		if (fillIsRunning) return;
-		fillIsRunning = true;
-		/*
-		if (gameBoard.table[ROWS-1].every((el)=>el==2)) {
-			playerMove(gameBoard, 3)
-		}
-		*/
-		let testInterval = setInterval(() => {
-			let validMoves = getValidMoves(gameBoard);
-			let winner = didSomeoneWin(gameBoard)
-			if (validMoves.length <= 0 || winner>=0) {
-				fillIsRunning = false;
-				clearInterval(testInterval);
-				if (winner>=0) {
-					console.log("the winner is "+winner+"!")
-				} else {
-					console.log("it's a draw!")
-				}
+	function isGameOver() {
+		let winner = didSomeoneWin(gameBoard);
+		gameBoard = gameBoard; //triggers reactivity
+		if (getValidMoves(gameBoard) <= 0 || winner >= 0) {
+			if (winner == 0) {
+				console.log("winner is red!");
+			} else if (winner == 1) {
+				console.log("winner is yellow!");
 			} else {
-				//let randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
-				let randomMove = minMaxedMove(4)
-				gameBoard = playerMove(gameBoard, randomMove);
+				console.log("it's a draw!");
 			}
-		}, 300);
+			return true;
+		}
+		return false;
 	}
 
-	const ROWS = 6;
-	const COLUMNS = 7;
+	let AIIsBattling = false;
 
-	function minMaxedMove(algDepth) {
-		return minimax(gameBoard, algDepth, null, null, gameBoard.currentPlayer).move;
+	function beginAIBattle() {
+		if (AIIsBattling) return;
+		resetGame();
+		AIIsBattling = true;
+		let firstPlayer = Math.random() >= 0.5 ? 1 : 0;
+		if (firstPlayer == 0) console.log("fighter one is red, fighter two is yellow (red always moves first)");
+		else console.log("fighter one is yellow, fighter two is red (red always moves first)");
+		AIBattle(firstPlayer);
+	}
+
+	function stopBattle() {
+		AIIsBattling = false;
+	}
+
+	function AIBattle(order) {
+		if (isGameOver()) return stopBattle();
+
+		fighter(order).then(() => {
+			if (isGameOver()) return stopBattle();
+			fighter(1 - order).then(() => {
+				AIBattle(order);
+			});
+		});
+	}
+
+	async function fighter(number = 0) {
+		let move = -1;
+		if (number == 0) {
+			//fighter one
+			move = await getAIMove(gameBoard, 4);
+		} else if (number == 1) {
+			//fighter two
+			move = await getAIMove(gameBoard, 4);
+		}
+		gameBoard = playerMove(gameBoard, move);
 	}
 
 	function testAlgTime(algDepth) {
-		//takes 60 seconds for algDepth = 7 on my pc
 		let before = Date.now();
-		minMaxedMove(algDepth);
+		getAIMove(gameBoard, algDepth);
 		let after = Date.now();
-		console.log(after - before + " ms")
+		console.log("depth: " + algDepth, "time: " + (after - before) + " ms");
 	}
+
 	let checked = false;
-	//testAlgTime(4);
+	//testAlgTime(6);
 </script>
 
 <svelte:head>
 	<link rel="preload" as="image" href="/images/player-one.svg" />
 	<link rel="preload" as="image" href="/images/player-two.svg" />
 </svelte:head>
-
 <main>
 	<div>
 		current player: <img
@@ -99,18 +119,22 @@
 		/>
 	</div>
 	<div id="game-table">
-		{#each gameBoard.table as row,j}
+		{#each gameBoard.table as row, j}
 			<div class="game-row">
 				{#each row as cell, i}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<div
 						class="game-cell"
+						id="cell-{[j, i]}"
+						style:background={gameBoard.winInfo.cells.includes(j + "," + i) ? "lightgreen" : "none"}
 						on:click={() => {
 							gameBoard = playerMove(gameBoard, i);
-							if (checked) setTimeout(()=>{
-								gameBoard = playerMove(gameBoard, minMaxedMove(4))
-							},100)
-							//cell = (cell+1)%3
+							if (checked)
+								setTimeout(() => {
+									gameBoard = playerMove(gameBoard, getAIMove(gameBoard, 4));
+								}, 100);
+
+							//cell = (cell+1)%3;
 						}}
 					>
 						{#if cell == 0}
@@ -126,10 +150,14 @@
 		{/each}
 	</div>
 	<div>
-		<button on:click={resetTable}>reset game</button>
-		<button on:click={fillBoard}>fill board</button>
-		<button on:click={()=>{gameBoard = playerMove(gameBoard, minMaxedMove(4))}}>ai move</button>
-		<label><input type="checkbox" bind:checked id="">play against ai</label>
+		<button on:click={resetGame}>reset game</button>
+		<button on:click={beginAIBattle}>AI battle</button>
+		<button
+			on:click={() => {
+				gameBoard = playerMove(gameBoard, getAIMove(gameBoard, 4));
+			}}>ai move</button
+		>
+		<label><input type="checkbox" bind:checked />play against ai</label>
 	</div>
 </main>
 
