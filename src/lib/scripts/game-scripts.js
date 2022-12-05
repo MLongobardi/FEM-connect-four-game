@@ -1,11 +1,23 @@
-const ROWS = 6;
-const COLUMNS = 7;
+import { ROWS, COLUMNS } from "$scripts/settings.js";
 
 export function getValidMoves(board) {
-	return board.depths.reduce((result, depth, i) => {
+	let validMoves = board.depths.reduce((result, depth, i) => {
 		if (depth >= 0) result = result.concat(i);
 		return result;
 	}, []);
+
+	//the columns at the centers have a higher chance of being the moves with the highest value
+	//so analyzing them first allows for more efficient alpha - beta pruning
+	function sortHelper(a, b) {
+		let center = (COLUMNS - 1) / 2;
+		let answer = Math.abs(center - a) - Math.abs(center - b);
+		if (answer != 0) return answer;
+		//if they have the same distance from the center, return a random one
+		let randomFactor = Math.random() < 0.5 ? 1 : -1;
+		return randomFactor;
+	}
+
+	return validMoves.sort(sortHelper);
 }
 
 export function didSomeoneWin(board) {
@@ -21,7 +33,7 @@ export function didSomeoneWin(board) {
 				winner == board.table[r][c + 2] &&
 				winner == board.table[r][c + 3]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r+","+ (c + i)) };
+				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r + "," + (c + i)) };
 				return winner;
 			}
 		}
@@ -37,7 +49,7 @@ export function didSomeoneWin(board) {
 				winner == board.table[r + 2][c] &&
 				winner == board.table[r + 3][c]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => (r + i) + "," + c) };
+				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r + i + "," + c) };
 				return winner;
 			}
 		}
@@ -54,7 +66,7 @@ export function didSomeoneWin(board) {
 				winner == board.table[r + 2][c + 2] &&
 				winner == board.table[r + 3][c + 3]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => (r + i) + "," + (c + i)) };
+				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r + i + "," + (c + i)) };
 				return winner;
 			} else if (
 				r >= ROWS - 3 &&
@@ -62,7 +74,7 @@ export function didSomeoneWin(board) {
 				winner == board.table[r - 2][c + 2] &&
 				winner == board.table[r - 3][c + 3]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => (r - i) + "," + (c + i)) };
+				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r - i + "," + (c + i)) };
 				return winner;
 			}
 		}

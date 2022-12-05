@@ -1,8 +1,17 @@
-import { ROWS, COLUMNS } from "$scripts/settings.js"
+import { ROWS, COLUMNS } from "$scripts/settings.js";
+
+export const HEURISTIC_VALUES = {
+	thrice: 3,
+	enemyThrice: -3,
+	twice: 2,
+	centerMod: 10,
+	verticalPenalty: 1.1,
+	heightPenalty: 1.15,
+};
 
 //TODO
 //pit two AIs with different sets of heuristic values against themselves and see who wins more often
-const HEURISTIC_VALUES = {
+export const HEURISTIC_FIGHTER_ONE = {
 	thrice: 3,
 	twice: 2,
 	centerMod: 10,
@@ -10,7 +19,15 @@ const HEURISTIC_VALUES = {
 	heightPenalty: 1.15,
 };
 
-export function getBoardValue(board, player) {
+export const HEURISTIC_FIGHTER_TWO = {
+	thrice: 3,
+	twice: 2,
+	centerMod: 10,
+	verticalPenalty: 1.1,
+	heightPenalty: 1.15,
+};
+
+export function getBoardValue(board, player, HEURISTIC_VALUES) {
 	let value = 0;
 	//TODO
 	//having more good sections should give more points. Maybe have a variable increase every time getSectionValue returns a value higher than 0, and either add it (multiply?) to the final result. Could interact weirdly when the result is negative though
@@ -23,7 +40,7 @@ export function getBoardValue(board, player) {
 			for (let i = 1; i <= 3; i++) {
 				section = section.concat(board.table[r][c + i]);
 			}
-			value += getSectionValue(section, player, "horizontal", r, c, board);
+			value += getSectionValue(section, player, "horizontal", r, c, board, HEURISTIC_VALUES);
 		}
 	}
 
@@ -34,7 +51,7 @@ export function getBoardValue(board, player) {
 			for (let i = 1; i <= 3; i++) {
 				section = section.concat(board.table[r + i][c]);
 			}
-			value += getSectionValue(section, player, "vertical", r, c, board);
+			value += getSectionValue(section, player, "vertical", r, c, board, HEURISTIC_VALUES);
 		}
 	}
 
@@ -49,7 +66,7 @@ export function getBoardValue(board, player) {
 					section = section.concat(board.table[r - i][c + i]);
 				}
 			}
-			value += getSectionValue(section, player, "diagonal", r, c, board);
+			value += getSectionValue(section, player, "diagonal", r, c, board, HEURISTIC_VALUES);
 		}
 	}
 
@@ -75,7 +92,7 @@ export function getBoardValue(board, player) {
 	return value;
 }
 
-function getSectionValue(section, player, direction, r, c, board) {
+function getSectionValue(section, player, direction, r, c, board, HEURISTIC_VALUES) {
 	let value = 0;
 	let counts = section.reduce((acc, curr) => {
 		acc[curr] = (acc[curr] || 0) + 1;
@@ -89,11 +106,11 @@ function getSectionValue(section, player, direction, r, c, board) {
 
 	if (counts[player] == 3 && counts["2"] == 1) value += HEURISTIC_VALUES.thrice;
 	else if (counts[player] == 2 && counts["2"] == 2) value += HEURISTIC_VALUES.twice;
-	else if (counts[1 - player] == 3 && counts["2"] == 1) value -= HEURISTIC_VALUES.thrice;
+	//tried giving -HV.thrice when counts["1 - player"] == 3, but tournamentArc testing found no difference
 
 	if (direction == "vertical") {
 		//vertical sections are easier to see and counter
-		value /= HEURISTIC_VALUES.verticalPenalty;
+		//value /= HEURISTIC_VALUES.verticalPenalty;
 	} else {
 		for (let i = 0; i <= 3; i++) {
 			if (section[i] != 2) continue;
@@ -108,16 +125,17 @@ function getSectionValue(section, player, direction, r, c, board) {
 					height = board.depths[c + i] - (r - i);
 				}
 			}
-			if (height == 0 && board.currentPlayer == player && counts["2"] == 1) {
+			if (height == 0 && counts["2"] == 1) {
 				//win next move
-				value *= 10;
-			} else if (height > 0 && height % 2 == 1 - player) {
+				//value *= 10;
+			} else if (height > 0) {
+				//height > 0 && height % 2 == 1 - player
 				//penalty based on the number of empty cells under missing cell(s) in the section, unless that number is even
 				value /= Math.pow(HEURISTIC_VALUES.heightPenalty, height);
 			}
 		}
 	}
-    
+
 	//if (value > 0) console.log(section, r, c, direction, value);
 	return value;
 }
