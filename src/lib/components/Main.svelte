@@ -2,18 +2,21 @@
 	import { getAIMove } from "$scripts/computer-ai.js";
 	import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 	import { getBoardValue, HEURISTIC_VALUES, HEURISTIC_FIGHTER_ONE, HEURISTIC_FIGHTER_TWO } from "$scripts/heuristics.js";
-	
-	let gameBoard = {
-		table: [
-			[2, 2, 2, 2, 2, 2, 2],
-			[2, 2, 2, 2, 2, 2, 2],
-			[2, 2, 2, 2, 2, 2, 2],
-			[2, 2, 2, 2, 2, 2, 2],
-			[2, 2, 2, 2, 2, 2, 2],
-			[2, 2, 2, 2, 2, 2, 2],
-		],
-		depths: [5, 5, 5, 5, 5, 5, 5],
+
+	let gameState = {
+		board: {
+			table: [
+				[2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2],
+				[2, 2, 2, 2, 2, 2, 2],
+			],
+			depths: [5, 5, 5, 5, 5, 5, 5],
+		},
 		currentPlayer: 0,
+		gameOver: false,
 		winInfo: { player: 2, cells: [] },
 		thisAIBattleInfo: {
 			movedFirst: ""
@@ -26,20 +29,37 @@
 			yellow_two: 0, //fighter two moved second
 			draws: 0,
 		},
-	};
 
-	function resetGame() {
-		gameBoard.table = gameBoard.table.map((row) => row.map(() => 2));
-		gameBoard.depths = gameBoard.depths.map(() => 5);
-		gameBoard.currentPlayer = 0;
-		gameBoard.winInfo = { player: 2, cells: [] };
+		testPlayMove(move) {
+			if (this.depths[move] >= 0 && !this.gameOver) {
+				this.table[this.depths[move]][move] = this.currentPlayer;
+				this.depths[move]--;
+				this.currentPlayer = 1 - this.currentPlayer;
+				//console.log(this)
+			}
+		},
+	};
+	
+	let AIIsBattling = false;
+
+	function didSomeoneWinWrapper(board) {
+		let info = didSomeoneWin(board);
+		gameState.winInfo = info;
+		return info.player;
 	}
 
-	function playerMove(board, move) {
-		if (board.depths[move] >= 0 && board.winInfo.player == 2) {
-			board.table[board.depths[move]][move] = board.currentPlayer;
-			board.depths[move]--;
-			board.currentPlayer = 1 - board.currentPlayer;
+	function resetGame() {
+		gameState.board.table = gameState.board.table.map((row) => row.map(() => 2));
+		gameState.board.depths = gameState.board.depths.map(() => 5);
+		gameState.currentPlayer = 0;
+		gameState.winInfo = { player: 2, cells: [] };
+	}
+
+	function playerMove(state, move) {
+		if (state.board.depths[move] >= 0 && state.winInfo.player == 2) {
+			state.board.table[state.board.depths[move]][move] = state.currentPlayer;
+			state.board.depths[move]--;
+			state.currentPlayer = 1 - state.currentPlayer;
 			isGameOver();
 			if (!AIIsBattling) {
 				isGameOver();
@@ -50,14 +70,23 @@
 				*/
 			}
 		}
-		return board;
+		return state;
 	}
+	
+	function undoMove(board, move) {
+		if (board.depths[move] < 5) {
+			board.depths[move]++;
+			board.table[board.depths[move]][move] = 2;
+			board.currentPlayer = 1 - board.currentPlayer;
+		}
+	return board;
+}
 
 	/*test*/
 	function isGameOver() {
-		let winner = didSomeoneWin(gameBoard);
-		gameBoard = gameBoard; //triggers reactivity
-		if (getValidMoves(gameBoard) <= 0 || winner >= 0) {
+		let winner = didSomeoneWinWrapper(gameState.board);
+		gameState = gameState; //triggers reactivity
+		if (getValidMoves(gameState.board) <= 0 || winner != 2) {
 			if (AIIsBattling) return true;
 			if (winner == 0) {
 				console.log("winner is red!");
@@ -71,36 +100,36 @@
 		return false;
 	}
 
-	let AIIsBattling = false;
-	
+	//let AIIsBattling = false;
+
 	function tournamentArc() {
 		if (AIIsBattling) return;
 		resetGame();
 		AIIsBattling = true;
 		let firstPlayer = Math.random() < 0.5 ? 1 : 0;
 		if (firstPlayer == 0) {
-			gameBoard.thisAIBattleInfo.movedFirst = "one";
+			gameState.thisAIBattleInfo.movedFirst = "one";
 		}
 		else {
-			gameBoard.thisAIBattleInfo.movedFirst = "two";
+			gameState.thisAIBattleInfo.movedFirst = "two";
 		};
 		AIBattle(firstPlayer);
 	}
 
 	function stopBattle() {
 		AIIsBattling = false;
-		let winner = didSomeoneWin(gameBoard);
-		if (winner<0) gameBoard.tournamentArcResults.draws++;
+		let winner = didSomeoneWinWrapper(gameState.board);
+		if (winner==2) gameState.tournamentArcResults.draws++;
 		else {
 			let winnerColor = ["red","yellow"][winner];
-			let movedFirst = gameBoard.thisAIBattleInfo.movedFirst;
+			let movedFirst = gameState.thisAIBattleInfo.movedFirst;
 			let x = winnerColor+"_"+movedFirst;
-			gameBoard.tournamentArcResults[x]++
-			console.log(x, "run " + gameBoard.tournamentArcResults.totalRuns)
+			gameState.tournamentArcResults[x]++
+			console.log(x, "run " + gameState.tournamentArcResults.totalRuns)
 		}
-		gameBoard.tournamentArcResults.totalRuns++;
-		if (gameBoard.tournamentArcResults.totalRuns <= tournamentRuns) tournamentArc();
-		else console.log(gameBoard.tournamentArcResults)
+		gameState.tournamentArcResults.totalRuns++;
+		if (gameState.tournamentArcResults.totalRuns <= tournamentRuns) tournamentArc();
+		else console.log(gameState.tournamentArcResults)
 	}
 
 	function AIBattle(order) {
@@ -113,31 +142,37 @@
 			});
 		});
 	}
-	
+
 	async function fighter(number = 0) {
 		let move = -1;
 		if (number == 0) {
 			//fighter one
-			move = await getAIMove(gameBoard, 5, HEURISTIC_FIGHTER_ONE);
+			move = await getAIMove(gameState, 5, HEURISTIC_FIGHTER_ONE);
 		} else if (number == 1) {
 			//fighter two
-			move = await getAIMove(gameBoard, 5, HEURISTIC_FIGHTER_TWO);
+			move = await getAIMove(gameState, 5, HEURISTIC_FIGHTER_TWO);
 		}
-		gameBoard = playerMove(gameBoard, move);
+		gameState = playerMove(gameState, move);
 	}
 
-	function testAlgTime(algDepth) {
-		console.log("calculating...")
-		let before = Date.now();
-		getAIMove(gameBoard, algDepth, HEURISTIC_VALUES);
-		let after = Date.now();
-		console.log("depth: " + algDepth, "time: " + (after - before) + " ms");
+	function testAlgTime(algDepth, times = 1, total = 0, count = 1) {
+		if (times > 0) {
+		console.log("calculating "+count+"...")
+		let before = performance.now();
+		playerMove(gameState, getAIMove(gameState, algDepth, HEURISTIC_VALUES));
+		let after = performance.now();
+		let time = after - before;
+		console.log("depth: " + algDepth, "time: " + time + " ms");
+		return testAlgTime(algDepth, times-1, total+time, count+1);
+		}
+		console.log("total: ", total + "ms")
+		console.log("--------------------")
 	}
+	//testAlgTime(6,30);
 
 	let checked = false;
 	let nextDepth = 4;
 	let tournamentRuns = 20;
-	//testAlgTime(7);
 </script>
 
 <svelte:head>
@@ -147,24 +182,25 @@
 <main>
 	<div>
 		current player: <img
-			src="/images/player-{gameBoard.currentPlayer ? 'two' : 'one'}.svg"
+			src="/images/player-{gameState.currentPlayer ? 'two' : 'one'}.svg"
 			alt="current-player"
 		/>
 	</div>
+	
 	<div id="game-table">
-		{#each gameBoard.table as row, j}
+		{#each gameState.board.table as row, j}
 			<div class="game-row">
 				{#each row as cell, i}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<div
 						class="game-cell"
 						id="cell-{[j, i]}"
-						style:background={gameBoard.winInfo.cells.includes(j + "," + i) ? "lightgreen" : "none"}
+						style:background={gameState.winInfo.cells.includes(j + "," + i) ? "lightgreen" : "none"}
 						on:click={() => {
-							gameBoard = playerMove(gameBoard, i);
+							gameState = playerMove(gameState, i);
 							if (checked)
 								setTimeout(() => {
-									gameBoard = playerMove(gameBoard, getAIMove(gameBoard, nextDepth, HEURISTIC_VALUES));
+									gameState = playerMove(gameState, getAIMove(gameState, nextDepth, HEURISTIC_VALUES));
 								}, 100);
 
 							//cell = (cell+1)%3;
@@ -190,7 +226,7 @@
 		</span>
 		<button
 			on:click={() => {
-				gameBoard = playerMove(gameBoard, getAIMove(gameBoard, nextDepth, HEURISTIC_VALUES));
+				gameState = playerMove(gameState, getAIMove(gameState, nextDepth, HEURISTIC_VALUES));
 				//nextDepth = 10 - nextDepth //inverts 4 and 6
 			}}>ai move</button
 		>

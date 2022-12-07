@@ -11,18 +11,19 @@ export function getValidMoves(board) {
 	function sortHelper(a, b) {
 		let center = (COLUMNS - 1) / 2;
 		let answer = Math.abs(center - a) - Math.abs(center - b);
+		return answer;
+		/* //currently commented out for testing
 		if (answer != 0) return answer;
 		//if they have the same distance from the center, return a random one
 		let randomFactor = Math.random() < 0.5 ? 1 : -1;
 		return randomFactor;
+		*/
 	}
-
+	
 	return validMoves.sort(sortHelper);
 }
 
 export function didSomeoneWin(board) {
-	//TODO
-	//return object with r, c and direction to highlight winning section
 	//check horizontal wins
 	for (let r = 0; r < ROWS; r++) {
 		for (let c = 0; c < COLUMNS - 3; c++) {
@@ -33,8 +34,7 @@ export function didSomeoneWin(board) {
 				winner == board.table[r][c + 2] &&
 				winner == board.table[r][c + 3]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r + "," + (c + i)) };
-				return winner;
+				return { player: winner, cells: [0, 1, 2, 3].map((i) => r + "," + (c + i)) };
 			}
 		}
 	}
@@ -49,8 +49,7 @@ export function didSomeoneWin(board) {
 				winner == board.table[r + 2][c] &&
 				winner == board.table[r + 3][c]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r + i + "," + c) };
-				return winner;
+				return { player: winner, cells: [0, 1, 2, 3].map((i) => r + i + "," + c) };
 			}
 		}
 	}
@@ -66,20 +65,18 @@ export function didSomeoneWin(board) {
 				winner == board.table[r + 2][c + 2] &&
 				winner == board.table[r + 3][c + 3]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r + i + "," + (c + i)) };
-				return winner;
+				return { player: winner, cells: [0, 1, 2, 3].map((i) => r + i + "," + (c + i)) };
 			} else if (
 				r >= ROWS - 3 &&
 				winner == board.table[r - 1][c + 1] &&
 				winner == board.table[r - 2][c + 2] &&
 				winner == board.table[r - 3][c + 3]
 			) {
-				board.winInfo = { player: winner, cells: [0, 1, 2, 3].map((i) => r - i + "," + (c + i)) };
-				return winner;
+				return { player: winner, cells: [0, 1, 2, 3].map((i) => r - i + "," + (c + i)) };
 			}
 		}
 	}
 
 	//nobody won
-	return -1;
+	return { player: 2, cells: []};
 }
