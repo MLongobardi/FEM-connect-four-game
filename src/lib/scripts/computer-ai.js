@@ -1,3 +1,4 @@
+import { MapWithMaxLength } from "$scripts/MapWithMaxLength";
 import { getBoardValue } from "$scripts/heuristics";
 import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 const DEBUG = false;
@@ -11,26 +12,7 @@ export function getAIMove(state, algDepth, HEURISTIC_VALUES) {
 	return minimax(state.board, algDepth, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, state.currentPlayer, 0, HEURISTIC_VALUES).move
 }
 
-const boardCache = new Map();
-//works, but there's 74,088 possible boards in Connect 4, maybe there could be a memory issue after enough games.
-//if needed, change this from a Map to something like this:
-/*
-const boardCache = {
-	cache: {},
-	cacheLength = 0,
-	maxSize: ???
-	set(key,value) {
-		if (cacheLength >= maxSize) {
-			delete cache[Object.keys(cache)[0]]
-			cacheLength--;
-		}
-
-		cache[key] = value
-		cacheLength++
-	},
-	get(key) {return this.cache[key]},
-}
-*/
+const boardCache = new MapWithMaxLength();
 
 function playMove(board, move, currentPlayer) {
 	board.table[board.depths[move]][move] = currentPlayer;
@@ -40,7 +22,7 @@ function playMove(board, move, currentPlayer) {
 
 function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 	let logIndent = "--".repeat(c);
-	//if (c == 1) console.log(boardCache) 
+	if (c == 0) console.log(boardCache.size) 
 	//base case
 	let validMoves = getValidMoves(board); //ordered to improve alpha-beta pruning
 	let winner = didSomeoneWin(board).player;
@@ -59,8 +41,9 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 	if (depth == 0) {
 		if (USE_CACHE) {
 			let boardKey = board.table.reduce((a, b) => a + b.join(""), "");
-			let boardValue = boardCache.get(boardKey);
-			if (!boardValue) {
+			let boardValue;
+			if (boardCache.has(boardKey)) boardValue = boardCache.get(boardKey);
+			else {
 				boardValue = getBoardValue(board, AI, HEURISTIC_VALUES);
 				boardCache.set(boardKey, boardValue);
 			}

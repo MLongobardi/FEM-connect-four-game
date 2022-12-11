@@ -142,7 +142,7 @@
 			});
 		});
 	}
-
+	
 	async function fighter(number = 0) {
 		let move = -1;
 		if (number == 0) {
@@ -156,6 +156,7 @@
 	}
 
 	function testAlgTime(algDepth, times = 1, total = 0, count = 1) {
+		//actually console.time() exists, so look into that
 		if (times > 0) {
 		console.log("calculating "+count+"...")
 		let before = performance.now();
@@ -171,7 +172,7 @@
 	//testAlgTime(6,30);
 
 	let checked = false;
-	let nextDepth = 4;
+	let nextDepth = 7;
 	let tournamentRuns = 20;
 </script>
 
