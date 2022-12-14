@@ -15,6 +15,7 @@ const MAX_LENGTH = Math.pow(2, 24) - 1;
 export class MapWithMaxLength extends Map {
 	constructor(maxLength = MAX_LENGTH, iterable) {
 		super(iterable);
+		if (maxLength > MAX_LENGTH) maxLength = MAX_LENGTH;
 		this.maxLength = maxLength;
 	}
 

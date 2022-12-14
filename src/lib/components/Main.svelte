@@ -14,6 +14,18 @@
 				[2, 2, 2, 2, 2, 2, 2],
 			],
 			depths: [5, 5, 5, 5, 5, 5, 5],
+			/*
+			//test
+			table: [
+				[1, 2, 0, 0, 0, 2, 2],
+				[0, 2, 1, 0, 1, 2, 2],
+				[0, 2, 1, 1, 1, 2, 2],
+				[1, 2, 1, 1, 0, 2, 2],
+				[0, 2, 0, 0, 0, 1, 1],
+				[1, 2, 1, 0, 0, 1, 0],
+			],
+			depths: [-1, 5, -1, -1, -1, 3, 3],
+			*/
 		},
 		currentPlayer: 0,
 		gameOver: false,
@@ -22,11 +34,12 @@
 			movedFirst: ""
 		},
 		tournamentArcResults: {
+			//red moves first
 			totalRuns: 0,
-			red_one: 0, //fighter one moved first
-			yellow_one: 0, //fighter one moved second
-			red_two: 0, //fighter two moved first
-			yellow_two: 0, //fighter two moved second
+			red_one: 0, //fighter one moved first and won
+			yellow_one: 0, //fighter one moved second and won
+			red_two: 0, //fighter two moved first and won
+			yellow_two: 0, //fighter two moved second and won
 			draws: 0,
 		},
 
@@ -64,8 +77,8 @@
 			if (!AIIsBattling) {
 				isGameOver();
 				/*
-				console.log("red score: " + getBoardValue(board, 0));
-				console.log("yellow score: " + getBoardValue(board, 1));
+				console.log("red score: " + getBoardValue(gameState.board, 0));
+				console.log("yellow score: " + getBoardValue(gameState.board, 1));
 				console.log("--------");
 				*/
 			}
@@ -101,12 +114,13 @@
 	}
 
 	//let AIIsBattling = false;
-
+	let firstPlayer = 1;
 	function tournamentArc() {
 		if (AIIsBattling) return;
 		resetGame();
 		AIIsBattling = true;
-		let firstPlayer = Math.random() < 0.5 ? 1 : 0;
+		//let firstPlayer = Math.random() < 0.5 ? 1 : 0;
+		firstPlayer = 1 - firstPlayer;
 		if (firstPlayer == 0) {
 			gameState.thisAIBattleInfo.movedFirst = "one";
 		}
@@ -173,7 +187,7 @@
 
 	let checked = false;
 	let nextDepth = 7;
-	let tournamentRuns = 20;
+	let tournamentRuns = 299;
 </script>
 
 <svelte:head>
