@@ -1,26 +1,31 @@
 import { ROWS, COLUMNS } from "$scripts/settings.js";
 
 export const HEURISTIC_VALUES = {
-	thrice: 3,
-	//enemyThrice: -3,
+	thrice: 5,
+	enemyThrice: -5,
 	twice: 2,
-	centerMod: 1/10,
-	verticalPenalty: 1.1,
-	heightPenalty: 1,
+	enemyTwice: -2,
+	centerMod: 1 / 10,
+	easierToSee: 1.1,
+	heightPenalty: 1.05,
 };
 
 //pit two AIs with different sets of heuristic values against themselves and see who wins more often
 export const HEURISTIC_FIGHTER_ONE = {
 	thrice: 3,
+	enemyThrice: -5,
 	twice: 2,
-	centerMod: 1/10,
+	enemyTwice: -2,
+	centerMod: 1 / 10,
 	verticalPenalty: 1,
 	heightPenalty: 1,
 };
 
 export const HEURISTIC_FIGHTER_TWO = {
 	thrice: 3,
+	enemyThrice: -3,
 	twice: 2,
+	enemyTwice: -2,
 	centerMod: 0,
 	verticalPenalty: 1,
 	heightPenalty: 1,
@@ -28,8 +33,19 @@ export const HEURISTIC_FIGHTER_TWO = {
 
 export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 	let value = 0;
-	//TODO
-	//having more good sections should give more points. Maybe have a variable increase every time getSectionValue returns a value higher than 0, and either add it (multiply?) to the final result. Could interact weirdly when the result is negative though
+	//I used Sets because they only allow for unique elements
+	let winningCells = new Set();
+	let losingCells = new Set();
+	
+	function handleResults(results) {
+		if (results.missingCell !== null && results.missingCell.height == 0) {
+			let newCell = [results.missingCell.row, results.missingCell.column];
+			if (results.missingCell.winning) winningCells.add(newCell);
+			else losingCells.add(newCell);
+		}
+
+		return results.value;
+	}
 
 	//find all possible 4 piece sections, run getSectionValue on them
 	//check horizontal sections
@@ -39,7 +55,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 			for (let i = 1; i <= 3; i++) {
 				section = section.concat(board.table[r][c + i]);
 			}
-			value += getSectionValue(section, player, "horizontal", r, c, board, hv);
+			value += handleResults(getSectionValue(section, player, "horizontal", r, c, board.depths, hv));
 		}
 	}
 
@@ -50,7 +66,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 			for (let i = 1; i <= 3; i++) {
 				section = section.concat(board.table[r + i][c]);
 			}
-			value += getSectionValue(section, player, "vertical", r, c, board, hv);
+			value += handleResults(getSectionValue(section, player, "vertical", r, c, board.depths, hv));
 		}
 	}
 
@@ -65,9 +81,14 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 					section = section.concat(board.table[r - i][c + i]);
 				}
 			}
-			value += getSectionValue(section, player, "diagonal", r, c, board, hv);
+			value += handleResults(getSectionValue(section, player, "diagonal", r, c, board.depths, hv));
 		}
 	}
+
+	//having at least two different moves that can complete a section means winning
+	//console.log(losingCells)
+	if (winningCells.size >= 2) value += 200
+	if (losingCells.size >= 2) value -= 200
 
 	//cells in the center have higher value
 	//each number represents the number of sections that use that cell (reduced by 3, the minimum value)
@@ -91,52 +112,45 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 	return value;
 }
 
-function getSectionValue(section, player, direction, r, c, board, hv) {
-	let value = 0;
+function getSectionValue(section, player, direction, r, c, depths, hv) {
+	//objects that counts how many instances of 0, 1 or 2 are in the section
 	let counts = section.reduce((acc, curr) => {
 		acc[curr] = (acc[curr] || 0) + 1;
 		return acc;
 	}, {});
-	
-	if (counts["2"] >= 3) return 0;
-	if (counts[player] >= 1 && counts[1 - player] >= 1) return 0;
-	if (counts[player] == 4) return 100;
-	//if (counts[1 - player] == 4) return -10;
-	
-	if (counts[player] == 3 && counts["2"] == 1) value += hv.thrice;
-	else if (counts[player] == 2 && counts["2"] == 2) value += hv.twice;
-	//tried giving -HV.thrice when counts["1 - player"] == 3, but tournamentArc testing found no difference
 
-	if (direction == "vertical") {
-		//vertical sections are easier to see and counter
-		value /= hv.verticalPenalty;
-	} else {
-		
-		for (let i = 0; i <= 3; i++) {
-			if (section[i] != 2) continue;
-			let height;
-			if (direction == "horizontal") {
-				height = board.depths[c + i] - r;
-			} else {
-				//diagonal
-				if (r < ROWS - 3) {
-					height = board.depths[c + i] - (r + i);
-				} else {
-					height = board.depths[c + i] - (r - i);
-				}
-			}
-			if (height == 0 && counts["2"] == 1) {
-				//win next move
-				//value *= 10;
-			} else if (height > 0) {
-				//height > 0 && height % 2 == 1 - player
-				//penalty based on the number of empty cells under missing cell(s) in the section, unless that number is even
-				value /= Math.pow(hv.heightPenalty, height);
-			}
+	if (counts["2"] >= 3) return { value: 0, missingCell: null }; //ignore mostly empty sections
+	if (counts["0"] >= 1 && counts["1"] >= 1) return { value: 0, missingCell: null }; //ignore mixed sections
+	if (counts[player] == 4) return { value: 10000, missingCell: null }; //won
+	if (counts[1 - player] == 4) return { value: -10000, missingCell: null }; //lost
+
+	//set value base
+	let value = 0;
+	if (counts[player] == 3) value += hv.thrice;
+	else if (counts[player] == 2) value += hv.twice;
+	else if (counts[1 - player] == 3) value += hv.enemyThrice; //negative
+	else if (counts[1 - player] == 2) value += hv.enemyTwice; //negative
+
+	//value modifiers
+	//vertical and horizontal directions are easier too see for a human player
+	if (direction == "vertical" || direction == "horizontal") value /= hv.easierToSee;
+	
+	let missingCell = null;
+	if (counts["2"] == 1) {
+		missingCell = { row: r, column: c, height: 0, winning: value>=0 }; //stays this way if direction == "vertical"
+		let i = section.indexOf(2);
+		if (direction == "horizontal") {
+			missingCell.column += i;
+			missingCell.height = depths[missingCell.column] - missingCell.row;
+		} else if (direction == "diagonal") {
+			missingCell.row += r < ROWS - 3 ? i : -i;
+			missingCell.column += i;
+			missingCell.height = depths[missingCell.column] - missingCell.row;
 		}
-		
-	}
 
-	//if (value > 0) console.log(section, r, c, direction, value);
-	return value;
+		value /= Math.pow(hv.heightPenalty, missingCell.height); //sections are less valuable the longer it takes to complete them
+		missingCell.testInfo = { section: section, player: player, direction: direction, row: r, column: c, depths: depths }
+	}
+	
+	return { value: value, missingCell: missingCell };
 }

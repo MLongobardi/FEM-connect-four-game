@@ -3,7 +3,7 @@ import { getBoardValue } from "$scripts/heuristics";
 import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 const DEBUG = false;
 const USE_CACHE = true;
-const ADD_RANDOM = false;
+const RANDOMIZE = false;
 let AI = 0, SIMULATED_ADVERSARY = 1, useCacheOne = true;
 
 const cacheOne = new MapWithMaxLength();
@@ -14,7 +14,11 @@ export function getAIMove(state, algDepth, HEURISTIC_VALUES) {
 	AI = state.currentPlayer;
 	SIMULATED_ADVERSARY = 1 - AI;
 	if (algDepth <= 0) throw "depth must be at least 1!";
-	if (ADD_RANDOM && Math.random() < 0.05) { let rmoves = getValidMoves(state.board);  return rmoves[Math.floor(Math.random() * rmoves.length)];}
+	if (RANDOMIZE && Math.random() < 0.05) {
+		console.log("random move!");
+		let m = getValidMoves(state.board);
+		return m[Math.floor(Math.random() * m.length)];
+	}
 	return minimax(state.board, algDepth, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, state.currentPlayer, 0, HEURISTIC_VALUES).move
 }
 
@@ -53,8 +57,7 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 
 	if (winner != 2) {
 		//someone won
-		if (winner == AI) return { move: -1, value: 100000 };
-		else return { move: -1, value: -100000 };
+		return { move: -1, value: getBoardValueCache(board, HEURISTIC_VALUES)};
 	}
 
 	if (validMoves.length == 0) {
@@ -82,7 +85,7 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 				thisIterationValue = results.value;
 				thisIterationMove = i;
 			}
-
+			
 			//alpha-beta pruning
 			a = Math.max(a, thisIterationValue);
 			if (a >= b) {
@@ -101,7 +104,7 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 			let boardCopy = JSON.parse(JSON.stringify(board)); //deep copy
 			playMove(boardCopy, i, SIMULATED_ADVERSARY);
 			let results = minimax(boardCopy, depth - 1, a, b, AI, c + 1, HEURISTIC_VALUES); //boardCopy
-			results.value *= 0.9999999999; //favor shorter games if winning, longer ones if losing
+			results.value *= 0.99999; //favor shorter games if winning, longer ones if losing
 			if (DEBUG) console.log(logIndent, "move: ", i, "moveValue: ", results.value);
 			if (results.value < thisIterationValue) {
 				thisIterationValue = results.value;

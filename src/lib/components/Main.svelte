@@ -17,14 +17,14 @@
 			/*
 			//test
 			table: [
-				[1, 2, 0, 0, 0, 2, 2],
-				[0, 2, 1, 0, 1, 2, 2],
-				[0, 2, 1, 1, 1, 2, 2],
-				[1, 2, 1, 1, 0, 2, 2],
-				[0, 2, 0, 0, 0, 1, 1],
-				[1, 2, 1, 0, 0, 1, 0],
+				[2, 2, 0, 2, 2, 2, 2],
+				[2, 2, 1, 2, 2, 2, 2],
+				[2, 2, 1, 1, 1, 2, 2],
+				[2, 2, 1, 0, 0, 0, 2],
+				[2, 1, 0, 1, 0, 1, 2],
+				[2, 0, 1, 0, 0, 1, 0],
 			],
-			depths: [-1, 5, -1, -1, -1, 3, 3],
+			depths: [5, 3, -1, 1, 1, 2, 4],
 			*/
 		},
 		currentPlayer: 0,
@@ -246,7 +246,7 @@
 			}}>ai move</button
 		>
 		<label><input type="checkbox" bind:checked />play against ai</label>
-		<label><input type="number" bind:value={nextDepth} min=1 max=7> ai difficulty</label>
+		<label><input type="number" bind:value={nextDepth} min=1 max=9> ai difficulty</label>
 	</div>
 </main>
 
