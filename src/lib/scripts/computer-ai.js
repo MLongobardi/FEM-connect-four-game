@@ -79,7 +79,7 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 			let boardCopy = JSON.parse(JSON.stringify(board)); //deep copy
 			playMove(boardCopy, i, AI);
 			let results = minimax(boardCopy, depth - 1, a, b, SIMULATED_ADVERSARY, c + 1, HEURISTIC_VALUES); //boardCopy
-			results.value *= 0.99999; //favor shorter games if winning, longer ones if losing
+			results.value *= 0.9999; //favor shorter games if winning, longer ones if losing
 			if (DEBUG) console.log(logIndent, "move: ", i, "moveValue: ", results.value);
 			if (results.value > thisIterationValue) {
 				thisIterationValue = results.value;
@@ -104,7 +104,7 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 			let boardCopy = JSON.parse(JSON.stringify(board)); //deep copy
 			playMove(boardCopy, i, SIMULATED_ADVERSARY);
 			let results = minimax(boardCopy, depth - 1, a, b, AI, c + 1, HEURISTIC_VALUES); //boardCopy
-			results.value *= 0.99999; //favor shorter games if winning, longer ones if losing
+			results.value *= 0.9999; //favor shorter games if winning, longer ones if losing
 			if (DEBUG) console.log(logIndent, "move: ", i, "moveValue: ", results.value);
 			if (results.value < thisIterationValue) {
 				thisIterationValue = results.value;

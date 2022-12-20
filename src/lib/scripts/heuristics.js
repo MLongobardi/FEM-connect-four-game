@@ -5,9 +5,9 @@ export const HEURISTIC_VALUES = {
 	enemyThrice: -5,
 	twice: 2,
 	enemyTwice: -2,
-	centerMod: 1 / 10,
-	easierToSee: 1.1,
-	heightPenalty: 1.05,
+	centerMod: 1 / 3.8,
+	easierToSee: 1.15,
+	heightPenalty: 1.015,
 };
 
 //pit two AIs with different sets of heuristic values against themselves and see who wins more often
@@ -121,8 +121,8 @@ function getSectionValue(section, player, direction, r, c, depths, hv) {
 
 	if (counts["2"] >= 3) return { value: 0, missingCell: null }; //ignore mostly empty sections
 	if (counts["0"] >= 1 && counts["1"] >= 1) return { value: 0, missingCell: null }; //ignore mixed sections
-	if (counts[player] == 4) return { value: 10000, missingCell: null }; //won
-	if (counts[1 - player] == 4) return { value: -10000, missingCell: null }; //lost
+	if (counts[player] == 4) return { value: 100000, missingCell: null }; //won
+	if (counts[1 - player] == 4) return { value: -100000, missingCell: null }; //lost
 
 	//set value base
 	let value = 0;

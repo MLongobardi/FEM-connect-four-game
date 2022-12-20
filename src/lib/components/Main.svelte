@@ -17,14 +17,14 @@
 			/*
 			//test
 			table: [
-				[2, 2, 0, 2, 2, 2, 2],
-				[2, 2, 1, 2, 2, 2, 2],
-				[2, 2, 1, 1, 1, 2, 2],
-				[2, 2, 1, 0, 0, 0, 2],
-				[2, 1, 0, 1, 0, 1, 2],
-				[2, 0, 1, 0, 0, 1, 0],
+				[2, 2, 2, 1, 1, 0, 2],
+				[2, 2, 2, 1, 0, 1, 2],
+				[2, 2, 2, 1, 1, 1, 2],
+				[0, 2, 2, 0, 1, 0, 2],
+				[0, 1, 0, 1, 0, 0, 0],
+				[0, 1, 0, 0, 1, 0, 1],
 			],
-			depths: [5, 3, -1, 1, 1, 2, 4],
+			depths: [2, 3, 3, -1, -1, -1, 3],
 			*/
 		},
 		currentPlayer: 0,
@@ -99,7 +99,7 @@
 	function isGameOver() {
 		let winner = didSomeoneWinWrapper(gameState.board);
 		gameState = gameState; //triggers reactivity
-		if (getValidMoves(gameState.board) <= 0 || winner != 2) {
+		if (getValidMoves(gameState.board).length <= 0 || winner != 2) {
 			if (AIIsBattling) return true;
 			if (winner == 0) {
 				console.log("winner is red!");
@@ -186,8 +186,8 @@
 	//testAlgTime(6,30);
 
 	let checked = false;
-	let nextDepth = 7;
-	let tournamentRuns = 299;
+	let nextDepth = 3;
+	let tournamentRuns = 2;
 </script>
 
 <svelte:head>
@@ -239,12 +239,19 @@
 			<button on:click={tournamentArc}>AI tournament arc</button>
 			<label><input type="number" bind:value={tournamentRuns} min=1 max=1000>runs</label>
 		</span>
+		<span style="display: inline-flex; flex-direction: column">
 		<button
 			on:click={() => {
 				gameState = playerMove(gameState, getAIMove(gameState, nextDepth, HEURISTIC_VALUES));
 				//nextDepth = 10 - nextDepth //inverts 4 and 6
 			}}>ai move</button
 		>
+		<button on:click={() => {
+			resetGame();
+				while(!isGameOver())
+				gameState = playerMove(gameState, getAIMove(gameState, nextDepth, HEURISTIC_VALUES));
+			}}>ai game</button>
+		</span>
 		<label><input type="checkbox" bind:checked />play against ai</label>
 		<label><input type="number" bind:value={nextDepth} min=1 max=9> ai difficulty</label>
 	</div>
