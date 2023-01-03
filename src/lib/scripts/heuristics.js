@@ -1,5 +1,15 @@
 import { ROWS, COLUMNS } from "$scripts/settings.js";
 
+/* old values
+thrice: 3,
+enemyTrice: -3,
+twice: 2,
+enemyTwice: -2,
+centerMod: 1/10,
+easierToSee: 1.1
+heightPenalty: 1.05
+*/
+//With these values, when the AI plays against itself the one making the first move never loses (sometimes it's a draw), for depths 2 to 9
 export const HEURISTIC_VALUES = {
 	thrice: 5,
 	enemyThrice: -5,
@@ -10,28 +20,7 @@ export const HEURISTIC_VALUES = {
 	heightPenalty: 1.015,
 };
 
-//pit two AIs with different sets of heuristic values against themselves and see who wins more often
-export const HEURISTIC_FIGHTER_ONE = {
-	thrice: 3,
-	enemyThrice: -5,
-	twice: 2,
-	enemyTwice: -2,
-	centerMod: 1 / 10,
-	verticalPenalty: 1,
-	heightPenalty: 1,
-};
-
-export const HEURISTIC_FIGHTER_TWO = {
-	thrice: 3,
-	enemyThrice: -3,
-	twice: 2,
-	enemyTwice: -2,
-	centerMod: 0,
-	verticalPenalty: 1,
-	heightPenalty: 1,
-};
-
-export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
+export function getBoardValue(board, player) {
 	let value = 0;
 	//I used Sets because they only allow for unique elements
 	let winningCells = new Set();
@@ -55,7 +44,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 			for (let i = 1; i <= 3; i++) {
 				section = section.concat(board.table[r][c + i]);
 			}
-			value += handleResults(getSectionValue(section, player, "horizontal", r, c, board.depths, hv));
+			value += handleResults(getSectionValue(section, player, "horizontal", r, c, board.depths));
 		}
 	}
 
@@ -66,7 +55,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 			for (let i = 1; i <= 3; i++) {
 				section = section.concat(board.table[r + i][c]);
 			}
-			value += handleResults(getSectionValue(section, player, "vertical", r, c, board.depths, hv));
+			value += handleResults(getSectionValue(section, player, "vertical", r, c, board.depths));
 		}
 	}
 
@@ -81,7 +70,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 					section = section.concat(board.table[r - i][c + i]);
 				}
 			}
-			value += handleResults(getSectionValue(section, player, "diagonal", r, c, board.depths, hv));
+			value += handleResults(getSectionValue(section, player, "diagonal", r, c, board.depths));
 		}
 	}
 
@@ -104,7 +93,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 	for (let r = 0; r < ROWS; r++) {
 		for (let c = 0; c < ROWS; c++) {
 			if (board.table[r][c] == player) {
-				value += cellValues[r][c] * hv.centerMod;
+				value += cellValues[r][c] * HEURISTIC_VALUES.centerMod;
 			}
 		}
 	}
@@ -112,7 +101,7 @@ export function getBoardValue(board, player, hv = HEURISTIC_FIGHTER_ONE) {
 	return value;
 }
 
-function getSectionValue(section, player, direction, r, c, depths, hv) {
+function getSectionValue(section, player, direction, r, c, depths) {
 	//objects that counts how many instances of 0, 1 or 2 are in the section
 	let counts = section.reduce((acc, curr) => {
 		acc[curr] = (acc[curr] || 0) + 1;
@@ -126,14 +115,14 @@ function getSectionValue(section, player, direction, r, c, depths, hv) {
 
 	//set value base
 	let value = 0;
-	if (counts[player] == 3) value += hv.thrice;
-	else if (counts[player] == 2) value += hv.twice;
-	else if (counts[1 - player] == 3) value += hv.enemyThrice; //negative
-	else if (counts[1 - player] == 2) value += hv.enemyTwice; //negative
+	if (counts[player] == 3) value += HEURISTIC_VALUES.thrice;
+	else if (counts[player] == 2) value += HEURISTIC_VALUES.twice;
+	else if (counts[1 - player] == 3) value += HEURISTIC_VALUES.enemyThrice; //negative
+	else if (counts[1 - player] == 2) value += HEURISTIC_VALUES.enemyTwice; //negative
 
 	//value modifiers
 	//vertical and horizontal directions are easier too see for a human player
-	if (direction == "vertical" || direction == "horizontal") value /= hv.easierToSee;
+	if (direction == "vertical" || direction == "horizontal") value /= HEURISTIC_VALUES.easierToSee;
 	
 	let missingCell = null;
 	if (counts["2"] == 1) {
@@ -148,7 +137,7 @@ function getSectionValue(section, player, direction, r, c, depths, hv) {
 			missingCell.height = depths[missingCell.column] - missingCell.row;
 		}
 
-		value /= Math.pow(hv.heightPenalty, missingCell.height); //sections are less valuable the longer it takes to complete them
+		value /= Math.pow(HEURISTIC_VALUES.heightPenalty, missingCell.height); //sections are less valuable the longer it takes to complete them
 		missingCell.testInfo = { section: section, player: player, direction: direction, row: r, column: c, depths: depths }
 	}
 	

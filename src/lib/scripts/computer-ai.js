@@ -1,25 +1,32 @@
 import { MapWithMaxLength } from "$scripts/MapWithMaxLength";
 import { getBoardValue } from "$scripts/heuristics";
 import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
-const DEBUG = false;
 const USE_CACHE = true;
 const RANDOMIZE = false;
-let AI = 0, SIMULATED_ADVERSARY = 1, useCacheOne = true;
+let AI = 0;
+let SIMULATED_ADVERSARY = 1;
+let	useCacheOne = true;
 
 const cacheOne = new MapWithMaxLength();
 const cacheTwo = new MapWithMaxLength(); //two caches are needed when two AIs play against each other
 
-export function getAIMove(state, algDepth, HEURISTIC_VALUES) {
-	if (AI != state.currentPlayer) useCacheOne = !useCacheOne;
-	AI = state.currentPlayer;
+export function getAIMove(store, algDepth) {
+	if (AI != store.currentPlayer) useCacheOne = !useCacheOne;
+	AI = store.currentPlayer;
 	SIMULATED_ADVERSARY = 1 - AI;
 	if (algDepth <= 0) throw "depth must be at least 1!";
 	if (RANDOMIZE && Math.random() < 0.05) {
 		console.log("random move!");
-		let m = getValidMoves(state.board);
+		let m = getValidMoves(store.board);
 		return m[Math.floor(Math.random() * m.length)];
 	}
-	return minimax(state.board, algDepth, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, state.currentPlayer, 0, HEURISTIC_VALUES).move
+	return minimax(
+		store.board,
+		algDepth,
+		Number.NEGATIVE_INFINITY,
+		Number.POSITIVE_INFINITY,
+		store.currentPlayer
+	).move;
 }
 
 function playMove(board, move, player) {
@@ -28,36 +35,33 @@ function playMove(board, move, player) {
 	return board;
 }
 
-function getBoardValueCache(board, HEURISTIC_VALUES) {
-	if (!USE_CACHE) return getBoardValue(board, AI, HEURISTIC_VALUES);
+function getBoardValueCache(board) {
+	if (!USE_CACHE) return getBoardValue(board, AI);
 	let boardKey = board.table.reduce((a, b) => a + b.join(""), "");
 	if (useCacheOne) {
 		//cacheOne has the value
 		if (cacheOne.has(boardKey)) return cacheOne.get(boardKey);
 		//cacheOne doesn't have the value
-		let boardValue = getBoardValue(board, AI, HEURISTIC_VALUES);
+		let boardValue = getBoardValue(board, AI);
 		cacheOne.set(boardKey, boardValue);
 		return boardValue;
 	}
 	//cacheTwo has the value
 	if (cacheTwo.has(boardKey)) return cacheTwo.get(boardKey);
 	//cacheTwo doesn't have the value
-	let boardValue = getBoardValue(board, AI, HEURISTIC_VALUES);
+	let boardValue = getBoardValue(board, AI);
 	cacheTwo.set(boardKey, boardValue);
 	return boardValue;
 }
 
-function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
-	//c argument is for debugging, HEURISTIC_VALUES is for testing which heuristic function is better, remove both when done
-	let logIndent = "--".repeat(c);
-	//if (c == 0) console.log(boardCache.size) 
+function minimax(board, depth, a, b, player) {
 	//base case
 	let validMoves = getValidMoves(board); //ordered to improve alpha-beta pruning
 	let winner = didSomeoneWin(board).player;
 
 	if (winner != 2) {
 		//someone won
-		return { move: -1, value: getBoardValueCache(board, HEURISTIC_VALUES)};
+		return { move: -1, value: getBoardValueCache(board) };
 	}
 
 	if (validMoves.length == 0) {
@@ -66,46 +70,36 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 	}
 
 	if (depth == 0) {
-		return { move: -1, value: getBoardValueCache(board, HEURISTIC_VALUES) };
+		return { move: -1, value: getBoardValueCache(board) };
 	}
 
 	//recursion
 	if (player == AI) {
 		let thisIterationValue = Number.NEGATIVE_INFINITY;
 		let thisIterationMove = validMoves[0];
-		if (DEBUG) console.log(logIndent, "player: ", player, "validMoves: ", validMoves);
 		for (let i of validMoves) {
-			if (DEBUG && depth != 1) console.log(logIndent, "examining move ", i);
 			let boardCopy = JSON.parse(JSON.stringify(board)); //deep copy
 			playMove(boardCopy, i, AI);
-			let results = minimax(boardCopy, depth - 1, a, b, SIMULATED_ADVERSARY, c + 1, HEURISTIC_VALUES); //boardCopy
+			let results = minimax(boardCopy, depth - 1, a, b, SIMULATED_ADVERSARY); //boardCopy
 			results.value *= 0.9999; //favor shorter games if winning, longer ones if losing
-			if (DEBUG) console.log(logIndent, "move: ", i, "moveValue: ", results.value);
 			if (results.value > thisIterationValue) {
 				thisIterationValue = results.value;
 				thisIterationMove = i;
 			}
-			
+
 			//alpha-beta pruning
 			a = Math.max(a, thisIterationValue);
-			if (a >= b) {
-				if (DEBUG) console.log(logIndent, "pruned!", "a:", a, "b:", b);
-				break;
-			}
+			if (a >= b) break;
 		}
-		if (DEBUG) console.log(logIndent, "chosenMove: ", thisIterationMove, "value: ", thisIterationValue);
 		return { value: thisIterationValue, move: thisIterationMove };
 	} else if (player == SIMULATED_ADVERSARY) {
 		let thisIterationValue = Number.POSITIVE_INFINITY;
 		let thisIterationMove = validMoves[0];
-		if (DEBUG) console.log(logIndent, "player: ", player, "validMoves: ", validMoves);
 		for (let i of validMoves) {
-			if (DEBUG && depth != 1) console.log(logIndent, "examining move ", i);
 			let boardCopy = JSON.parse(JSON.stringify(board)); //deep copy
 			playMove(boardCopy, i, SIMULATED_ADVERSARY);
-			let results = minimax(boardCopy, depth - 1, a, b, AI, c + 1, HEURISTIC_VALUES); //boardCopy
+			let results = minimax(boardCopy, depth - 1, a, b, AI); //boardCopy
 			results.value *= 0.9999; //favor shorter games if winning, longer ones if losing
-			if (DEBUG) console.log(logIndent, "move: ", i, "moveValue: ", results.value);
 			if (results.value < thisIterationValue) {
 				thisIterationValue = results.value;
 				thisIterationMove = i;
@@ -113,13 +107,8 @@ function minimax(board, depth, a, b, player, c = 0, HEURISTIC_VALUES) {
 
 			//alpha-beta pruning
 			b = Math.min(b, thisIterationValue);
-			if (b <= a) {
-				if (DEBUG) console.log(logIndent, "pruned!", "a:", a, "b:", b);
-				break;
-			}
+			if (b <= a) break;
 		}
-		if (DEBUG)
-			console.log(logIndent, "chosenMove: ", thisIterationMove, "value: ", thisIterationValue);
 		return { value: thisIterationValue, move: thisIterationMove };
 	}
 }

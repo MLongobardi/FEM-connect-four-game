@@ -11,15 +11,14 @@ export function getValidMoves(board) {
 	function sortHelper(a, b) {
 		let center = (COLUMNS - 1) / 2;
 		let answer = Math.abs(center - a) - Math.abs(center - b);
-		//return answer; //
-		//currently commented out for testing
+		//return answer;
 		if (answer != 0) return answer;
 		//if they have the same distance from the center, return a random one
 		let randomFactor = Math.random() < 0.5 ? 1 : -1;
 		return randomFactor;
 		
 	}
-	
+
 	return validMoves.sort(sortHelper);
 }
 
