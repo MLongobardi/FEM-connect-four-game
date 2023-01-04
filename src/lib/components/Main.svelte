@@ -1,6 +1,7 @@
 <script>
 	import { getAIMove } from "$scripts/computer-ai.js";
 	import { gameStore } from "$scripts/store.js";
+	import { Board } from "$comps";
 	
 	function testAlgTime(algDepth, onlyOnce = true) {
 		console.time("total");
@@ -74,6 +75,8 @@
 		<label><input type="checkbox" bind:checked={playAgainstAI} />play against ai</label>
 		<label><input type="number" bind:value={nextDepth} min="1" max="9" /> ai difficulty</label>
 	</div>
+
+	<Board />
 </main>
 
 <style>
