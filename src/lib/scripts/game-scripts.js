@@ -18,7 +18,7 @@ export function getValidMoves(board) {
 		return randomFactor;
 		
 	}
-
+	
 	return validMoves.sort(sortHelper);
 }
 

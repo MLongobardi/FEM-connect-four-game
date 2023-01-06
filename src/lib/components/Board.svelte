@@ -1,7 +1,11 @@
 <script>
-    import {gameStore} from "$scripts/store.js";
+    import { gameStore } from "$scripts/store.js";
+    import { getAIMove } from "$scripts/computer-ai.js";
+    import { Piece } from "$comps"
 
 	let largeOrSmall = "large";
+    let playAgainstAI = false;
+	let nextDepth = 5;
 </script>
 
 <div class="board">
@@ -10,20 +14,42 @@
 	<div class="board-grid">
         {#each $gameStore.board.table as row, j}
             {#each row as cell, i}
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <div class="cell" on:click|capture={()=>{gameStore.playMove(i)}}>
-                        {#if cell != 2}
-                            {@const color = cell == 0 ? "red" : "yellow"}
-                            <img class="piece" style:--pos={j+1} src="images/counter-{color}-{largeOrSmall}.svg" alt="counter-{color}-{largeOrSmall}" draggable="false"/>
-                        {/if}
-                    </div>
-                
+                <div class="cell" id={"c" + j + i} on:click={()=>{
+                    gameStore.playMove(i)
+                    if (playAgainstAI) setTimeout(() => {
+						gameStore.playMove(getAIMove($gameStore, nextDepth));
+					}, 500);
+                }}>
+                    {#if cell != 2}
+                        <Piece depth={j} color={cell == 0 ? "red" : "yellow"} size={largeOrSmall} win={$gameStore.winInfo.cells.includes(j + "," + i)}/>
+                    {/if}
+                </div>
             {/each}
         {/each}
     </div>
 </div>
 
+<div class="temp">
+	<button on:click={gameStore.resetGame}>reset game</button>
+	<span style="display: inline-flex; flex-direction: column">
+		<button
+			on:click={() => {
+				gameStore.playMove(getAIMove($gameStore, nextDepth));
+			}}>ai move</button
+		>
+	</span>
+	<label><input type="checkbox" bind:checked={playAgainstAI} />play against ai</label>
+	<label><input type="number" bind:value={nextDepth} min="1" max="9" /> ai difficulty</label>
+</div>
+
 <style>
+    .temp {
+        background: white;
+        padding: 20px;
+        margin-top: 15px;
+        border-radius: 25px;
+    }
+
     img {
         user-select: none;
     }
@@ -47,8 +73,6 @@
         box-sizing: border-box;
         grid-template-columns: repeat(7, 1fr);
         grid-template-rows: repeat(6, 1fr);
-        /*padding: 15px;*/
-        /*gap: 20px;*/
 		z-index: 1;
 	}
 	.board-cover {
@@ -61,31 +85,5 @@
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    .piece {
-        --drop-duration: 0.3s;
-        --bounce-duration: 0.3s;
-        animation-name: drop, bounce;
-        /*animation-duration: calc(100ms * var(--pos));*/
-        animation-duration: var(--drop-duration), var(--bounce-duration);
-        animation-timing-function: cubic-bezier(.5, 0.05, 1, .5), ease;
-        animation-delay: 0s, calc(var(--drop-duration));
-        animation-iteration-count: 1, 1;
-    }
-
-    @keyframes drop {
-        from { transform: translateY(calc(var(--pos) * 117% * -1)) }
-        to { transform: none }
-    }
-    
-    @keyframes bounce {
-        0% { transform: translateY(0%) }
-        33% { transform: translateY(-25%) }
-        67% { transform: translateY(0%) }
-        83% { transform: translateY(-10%) }
-        92% { transform: translateY(0%) }
-        96% { transform: translateY(-3%) }
-        100% { transform: translateY(0) }
     }
 </style>
