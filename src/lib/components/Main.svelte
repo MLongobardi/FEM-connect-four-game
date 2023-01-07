@@ -1,7 +1,7 @@
 <script>
 	import { getAIMove } from "$scripts/computer-ai.js";
 	import { gameStore } from "$scripts/store.js";
-	import { Board } from "$comps";
+	import { Board, FixedTurnBackground } from "$comps";
 
 	function testAlgTime(algDepth, onlyOnce = true) {
 		console.time("total");
@@ -25,9 +25,8 @@
 </svelte:head>
 
 <main>
-	
-
 	<Board />
+	<FixedTurnBackground color={$gameStore.currentPlayer == 0 ? "red" : "yellow"} />
 </main>
 
 <style>
