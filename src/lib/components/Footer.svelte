@@ -1,7 +1,6 @@
 <script>
 	import { gameStore } from "$scripts/store.js";
 	
-
 	let colors = ["var(--pink)", "var(--yellow)", "var(--dark-purple)"];
 
 </script>
@@ -20,10 +19,5 @@
 		transition: background-color 200ms;
 		transition-delay: 250ms;
 		text-align: center;
-	}
-	text {
-		position: absolute;
-		bottom: -40px;
-		z-index: 3;
 	}
 </style>

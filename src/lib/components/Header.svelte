@@ -1,12 +1,12 @@
 <script>
-
+	import { gameStore } from "$scripts/store.js"
 </script>
 
 
 <header>
 	<button>MENU</button>
 	<img src="/images/logo.svg" alt="logo">
-	<button>RESTART</button>
+	<button on:click={gameStore.resetGame}>RESTART</button>
 </header>
 
 <style>

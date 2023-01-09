@@ -1,10 +1,13 @@
 <script>
 	import { fade } from "svelte/transition";
-	export let depth = 0, color = "", size = "", win = false;
+	export let depth = 0, color = "", breakPoint = "(min-width: 600px)", win = false;
 </script>
 
 <div class="piece" style:--pos={depth + 1}>
-	<img src="images/counter-{color}-{size}.svg" alt="counter-{color}-{size}" draggable="false" />
+	<picture>
+		<source srcset="/images/counter-{color}-large.svg" media={breakPoint}>
+		<img src="/images/counter-{color}-small.svg" alt="counter-{color}" draggable="false" />
+	</picture>
 	{#if win}
 		<div in:fade={{ delay: 250, duration: 200 }} class="win-ring">
 			<span style:--color={color == "red" ? "var(--pink)" : "var(--yellow)"} />
@@ -45,7 +48,7 @@
 		padding: calc(var(--width) * 0.2);
 	}
 	.win-ring span {
-		display: inline-block;
+		display: block;
 		background: var(--color);
 		border-radius: 50%;
 		height: 100%;
