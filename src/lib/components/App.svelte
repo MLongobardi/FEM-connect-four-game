@@ -3,8 +3,11 @@
 </script>
 
 <div class="page">
-	<Header />
-	<Main />
+	<div>
+		<!--temp: makes Header same width as Main-->
+		<Header />
+		<Main />
+	</div>
 	<Footer />
 </div>
 

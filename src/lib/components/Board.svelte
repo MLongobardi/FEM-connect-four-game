@@ -1,18 +1,10 @@
 <script>
-	import { onMount } from "svelte";
-	import { gameStore } from "$scripts/store.js";
+	import { gameStore, mediaStore } from "$stores";
 	import { getAIMove } from "$scripts/computer-ai.js";
 	import { Piece } from "$comps";
 
-	let breakPoint = "(min-width: 600px)";
-	let test = { matches: false };
-	onMount(() => {
-		test = window.matchMedia(breakPoint);
-		test.addEventListener("change", () => {
-			test = test; //triggers reactivity;
-		});
-	});
-	//Make a separate matchMedia store, make it so I can also retrieve the breakPoints (so, store.mobileBreakPoint or something) so I can use it for the <picture> tags (also in Piece.svelte, so I don't need to pass breakPoint as a prop)
+	//consider using myConfig.js values, so it synchronizes with mediaStore
+	let boardBreakPoint = "(min-width: 670px)";
 
 	$: markerColor = $gameStore.currentPlayer == 0 ? "red" : "yellow";
 	$: showMarker = $gameStore.gameOver ? "hidden" : "visible";
@@ -22,7 +14,7 @@
 </script>
 
 <div class="board-holder">
-	{#if test.matches}
+	{#if $mediaStore.misc.hoverable}
 		<div class="marker-box">
 			<img
 				class="marker"
@@ -34,7 +26,7 @@
 	{/if}
 	<div class="board">
 		<picture>
-			<source srcset="/images/board-layer-white-large.svg" media={breakPoint} />
+			<source srcset="/images/board-layer-white-large.svg" media={boardBreakPoint} />
 			<img
 				class="board-front"
 				src="/images/board-layer-white-small.svg"
@@ -43,7 +35,7 @@
 			/>
 		</picture>
 		<picture>
-			<source srcset="/images/board-layer-black-large.svg" media={breakPoint} />
+			<source srcset="/images/board-layer-black-large.svg" media={boardBreakPoint} />
 			<img
 				class="board-back"
 				src="/images/board-layer-black-small.svg"
@@ -70,7 +62,7 @@
 							<Piece
 								depth={j}
 								color={cell == 0 ? "red" : "yellow"}
-								{breakPoint}
+								breakPoint={boardBreakPoint}
 								win={$gameStore.winInfo.cells.includes(j + "," + i)}
 							/>
 						{/if}
@@ -132,21 +124,12 @@
 		--currentCol: 6;
 	}
 
-	.marker-box {
-		display: none;
-	}
 	.marker {
 		--step: calc(13.92%);
 		display: block;
 		visibility: var(--show);
 		margin-left: calc(33px + var(--step) * var(--currentCol));
 		transition: margin-left 350ms;
-	}
-
-	@media (hover: hover) and (pointer: fine) {
-		.marker-box {
-			display: block;
-		}
 	}
 
 	img {

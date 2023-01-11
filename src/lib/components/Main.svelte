@@ -1,6 +1,6 @@
 <script>
 	import { getAIMove } from "$scripts/computer-ai.js";
-	import { gameStore } from "$scripts/store.js";
+	import { gameStore } from "$stores";
 	import { Board, FixedTurnBackground } from "$comps";
 
 	function testAlgTime(algDepth, onlyOnce = true) {
@@ -14,15 +14,7 @@
 		console.timeEnd("total");
 	}
 	//testAlgTime(6, false)
-
-	let playAgainstAI = false;
-	let nextDepth = 5;
 </script>
-
-<svelte:head>
-	<link rel="preload" as="image" href="/images/player-one.svg" />
-	<link rel="preload" as="image" href="/images/player-two.svg" />
-</svelte:head>
 
 <main>
 	<Board />
@@ -36,5 +28,6 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		position: relative;
 	}
 </style>

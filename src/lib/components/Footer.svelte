@@ -1,5 +1,5 @@
 <script>
-	import { gameStore } from "$scripts/store.js";
+	import { gameStore } from "$stores";
 	
 	let colors = ["var(--pink)", "var(--yellow)", "var(--dark-purple)"];
 

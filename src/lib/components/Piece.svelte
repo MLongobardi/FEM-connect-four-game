@@ -1,9 +1,10 @@
 <script>
 	import { fade } from "svelte/transition";
-	export let depth = 0, color = "", breakPoint = "(min-width: 600px)", win = false;
+	import { mediaStore } from "$stores"
+	export let depth = 0, color = "", breakPoint = "(min-width: 670px)", win = false;
 </script>
 
-<div class="piece" style:--pos={depth + 1}>
+<div class="piece" class:animated={!$mediaStore.misc.prefersReducedMotion} style:--pos={depth + 1}>
 	<picture>
 		<source srcset="/images/counter-{color}-large.svg" media={breakPoint}>
 		<img src="/images/counter-{color}-small.svg" alt="counter-{color}" draggable="false" />
@@ -18,7 +19,9 @@
 <style>
 	.piece {
 		position: relative; /*necessary for .win-ring's percentages*/
-        --drop-duration: calc(70ms * var(--pos));
+	}
+	.piece.animated {
+		--drop-duration: calc(70ms * var(--pos));
 		--bounce-duration: 300ms;
 		animation-name: drop, bounce;
 		animation-duration: var(--drop-duration), var(--bounce-duration);

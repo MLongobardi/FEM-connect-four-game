@@ -93,4 +93,5 @@ function createStore() {
 	return returnStore; // subscribe, myMethod
 }
 
-export const gameStore = createStore();
+const gameStore = createStore();
+export default gameStore;

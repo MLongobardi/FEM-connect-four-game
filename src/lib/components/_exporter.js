@@ -1,3 +1,4 @@
+//$comps redirects here
 //need to write these manually
 //export { default as COMPONENT } from "./COMPONENT.svelte";
 
