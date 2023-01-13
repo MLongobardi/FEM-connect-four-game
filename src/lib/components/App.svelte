@@ -1,8 +1,12 @@
 <script>
-	import { Header, Main, Footer } from "$comps";
+	import { Header, Main, Footer, Overlay } from "$comps";
+	import { frontStore } from "$stores";
 </script>
 
 <div class="page">
+	{#if $frontStore.showModal}
+		<Overlay />
+	{/if}
 	<div>
 		<!--temp: makes Header same width as Main-->
 		<Header />

@@ -1,12 +1,12 @@
 <script>
-	import { gameStore, mediaStore } from "$stores";
+	import { gameStore, mediaStore, frontStore } from "$stores";
 </script>
 
 <header>
 	{#if $mediaStore.screen.tablet}
 		<div style="background: red; width: 100%">--</div>
 	{/if}
-	<button>MENU</button>
+	<button on:click={()=>{frontStore.openModal("pause")}}>MENU</button>
 	<img src="/images/logo.svg" alt="logo" />
 	<button on:click={gameStore.resetGame}>RESTART</button>
 </header>
@@ -28,5 +28,8 @@
 		padding: 10px 20px;
 		font-weight: bold;
 		height: fit-content;
+	}
+	button:hover {
+		background: var(--pink)
 	}
 </style>
