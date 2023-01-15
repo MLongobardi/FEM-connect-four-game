@@ -4,13 +4,11 @@
 	import { Piece } from "$comps";
 
 	//consider using myConfig.js values, so it synchronizes with mediaStore
-	let boardBreakPoint = "(min-width: 670px)";
+	const boardBreakPoint = "(min-width: 670px)";
+	let blockMoves = false;
 
 	$: markerColor = $gameStore.currentPlayer == 0 ? "red" : "yellow";
-	$: showMarker = $gameStore.gameOver ? "hidden" : "visible";
-
-	let playAgainstAI = false;
-	let nextDepth = 5;
+	$: showMarker = $gameStore.gameOver || ($gameStore.currentPlayer == 1 && $gameStore.currentMode == "PVC") ? "hidden" : "visible";
 </script>
 
 <div class="board-holder">
@@ -51,11 +49,18 @@
 						class="cell column-{i}"
 						id={"c" + j + i}
 						on:click={() => {
-							gameStore.playMove(i);
-							if (playAgainstAI)
-								setTimeout(() => {
-									gameStore.playMove(getAIMove($gameStore, nextDepth));
-								}, 500);
+							if (!blockMoves) {
+								blockMoves = true;
+								gameStore.playMove(i);
+								if ($gameStore.currentMode == "PVC") {
+									setTimeout(() => {
+										gameStore.playMove(getAIMove($gameStore, $gameStore.AIDepth));
+										blockMoves = false;
+									}, 500);
+								} else {
+									blockMoves = false;
+								}
+							}
 						}}
 					>
 						{#if cell != 2}
@@ -73,20 +78,6 @@
 	</div>
 </div>
 
-<!--
-<div class="temp">
-	<button on:click={gameStore.resetGame}>reset game</button>
-	<span style="display: inline-flex; flex-direction: column">
-		<button
-			on:click={() => {
-				gameStore.playMove(getAIMove($gameStore, nextDepth));
-			}}>ai move</button
-		>
-	</span>
-	<label><input type="checkbox" bind:checked={playAgainstAI} />play against ai</label>
-	<label><input type="number" bind:value={nextDepth} min="1" max="9" /> ai difficulty</label>
-</div>
--->
 <style>
 	.temp {
 		background: white;
@@ -144,6 +135,7 @@
 	.board-grid,
 	.board-back {
 		position: absolute;
+		z-index: 1;
 		left: 0;
 		top: 0;
 	}
@@ -159,7 +151,7 @@
 	}
 	.board-front {
 		position: relative;
-		z-index: 1;
+		z-index: 2;
 		pointer-events: none;
 	}
 

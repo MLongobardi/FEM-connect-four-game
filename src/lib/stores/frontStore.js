@@ -12,7 +12,7 @@ function createStore() {
 	//define custom store methods
     tempStore.openModal = (modal) => {
         tempStore.update((draft) => {
-            if (["menu", "pause", "rules"].includes(modal)) {
+            if (["menu", "pause", "rules", "difficulty"].includes(modal)) {
                 draft.currentModal = modal;
                 draft.showModal = true;
             } else {
@@ -24,7 +24,7 @@ function createStore() {
 
     tempStore.closeModal = () => {
         tempStore.update((draft) => {
-            if (draft.currentModal == "rules") {
+            if (draft.currentModal == "rules" || draft.currentModal == "difficulty") {
                 draft.currentModal = "menu";
             } else {
                 draft.currentModal = "";

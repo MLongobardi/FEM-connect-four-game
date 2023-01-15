@@ -1,10 +1,10 @@
 <script>
     import { frontStore } from "$stores";
-    import { MenuBox, PauseBox, RulesBox } from "$comps";
+    import { MenuBox, PauseBox, RulesBox, DifficultyBox } from "$comps";
     
-    const colorArray = ["var(--dark-purple)", "rgba(0, 0, 0, 0.5)", "var(--purple)"]
-    $: colorIndex = ["menu", "pause", "rules"].indexOf($frontStore.currentModal)
-
+    const colorArray = ["var(--dark-purple)", "rgba(0, 0, 0, 0.5)", "var(--purple)", "var(--dark-purple)"]
+    $: colorIndex = ["menu", "pause", "rules","difficulty"].indexOf($frontStore.currentModal)
+    
     function handleClick() {
         if ($frontStore.currentModal == "menu") return;
         frontStore.closeModal();
@@ -17,8 +17,10 @@
         <MenuBox />
     {:else if $frontStore.currentModal == "pause"}
         <PauseBox />
-    {:else}
+    {:else if $frontStore.currentModal == "rules"}
         <RulesBox />
+    {:else if $frontStore.currentModal == "difficulty"}
+        <DifficultyBox />
     {/if}
 </div>
 
@@ -32,7 +34,7 @@
 		background: var(--color);
 		position: fixed;
         top: 0;
-		z-index: 2;
+		z-index: 10;
 	}
 
     :global(body):has(.overlay) {

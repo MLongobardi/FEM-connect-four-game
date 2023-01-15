@@ -66,8 +66,7 @@
 
 <style>
 	svg {
-		position: absolute;
-		z-index: 1;
-        bottom: -115px;
+		position: relative;
+		z-index: 2;
 	}
 </style>

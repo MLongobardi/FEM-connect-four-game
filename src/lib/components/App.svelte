@@ -7,11 +7,10 @@
 	{#if $frontStore.showModal}
 		<Overlay />
 	{/if}
-	<div>
-		<!--temp: makes Header same width as Main-->
-		<Header />
-		<Main />
-	</div>
+	<span style="flex-grow: 2;" />
+	<Header />
+	<span style="flex-grow: 4;" />
+	<Main />
 	<Footer />
 </div>
 

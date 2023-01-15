@@ -10,7 +10,7 @@
         frontStore.closeModal();
     }
     function handleQuit() {
-        gameStore.resetGame();
+        gameStore.hardReset();
         frontStore.openModal("menu")
     }
 </script>

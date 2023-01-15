@@ -1,9 +1,10 @@
 <script>
 	import { getAIMove } from "$scripts/computer-ai.js";
-	import { gameStore } from "$stores";
-	import { Board, FixedTurnBackground } from "$comps";
+	import { gameStore, mediaStore } from "$stores";
+	import { Board, ScoreCard } from "$comps";
 
 	function testAlgTime(algDepth, onlyOnce = true) {
+		gameStore.hardReset();
 		console.time("total");
 		while (!$gameStore.gameOver) {
 			console.time("thisMove");
@@ -13,21 +14,36 @@
 		}
 		console.timeEnd("total");
 	}
-	//testAlgTime(6, false)
+	//testAlgTime(5, false)
 </script>
 
-<main>
-	<Board />
-	<FixedTurnBackground color={$gameStore.currentPlayer == 0 ? "red" : "yellow"} />
-</main>
+{#if $mediaStore.screen.desktop == true}
+	<main class="big">
+		<ScoreCard mode={$gameStore.currentMode} position="left" />
+		<Board />
+		<ScoreCard mode={$gameStore.currentMode} position="right" />
+	</main>
+{:else}
+	<main>
+		<div class="score-holder">
+			<ScoreCard mode={$gameStore.currentMode} position="left" />
+			<ScoreCard mode={$gameStore.currentMode} position="right" />
+		</div>
+		<Board />
+	</main>
+{/if}
 
 <style>
-	main {
-		flex-grow: 1; /*child of .page in App.svelte*/
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
+	main.big {
+		display: grid;
+		grid-template-columns: 180px 1fr 180px;
+		justify-items: center;
 		align-items: center;
-		position: relative;
+	}
+
+	.score-holder {
+		display: flex;
+		justify-content: space-between;
+		margin: 15px 0;
 	}
 </style>
