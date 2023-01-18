@@ -2,26 +2,8 @@
     import { gameStore, mediaStore } from "$stores";
     export let mode = "PVP"; // "PVC"
     export let position = "left"; // "right"
-    let score = 12;
-    
     /*
-    mode == "pvp" && version: "1"
-    name: "PLAYER 1",
-    src: "/images/player-one.svg",
-    position: "left",
-    --------------
-    name: "PLAYER 2",
-    src: "/images/player-two.svg",
-    position: "right",
-    --------------
-    name: "YOU",
-    src: "/images/you.svg",
-    position: "left",
-    --------------
-    name: "CPU",
-    src: "/images/cpu.svg",
-    position: "right",
-    --------------
+    TODO: change h3 and h1 to spans and extend %heading-(L|S), because I think headings here aren't semantically correct
     */
 </script>
 

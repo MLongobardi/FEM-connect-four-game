@@ -1,3 +1,5 @@
+@import "normalize.css";
+
 @font-face {
 	font-family: "SpaceGrotesk";
 	src: url("/fonts/SpaceGrotesk-VariableFont_wght.ttf") format("truetype");
@@ -14,26 +16,21 @@
 body {
 	font-family: "SpaceGrotesk";
     font-size: 16px;
+    background: var(--purple);
     line-height: 20px;
     color: #575757;
     font-weight: 500;
 }
 
-h1, h2, h3, h4 {
-	font-size: 56px;
-	line-height: 71px;
-    font-weight: bold;
-    color: black;
+h1 {
+    @extend %heading-L;
 }
 h2 {
-	font-size: 24px;
-	line-height: 31px;
+    @extend %heading-M;
 }
 h3 {
-	font-size: 20px;
-	line-height: 26px;
+    @extend %heading-S;
 }
 h4 {
-	font-size: 16px;
-	line-height: 21px;
+    @extend %heading-XS;
 }

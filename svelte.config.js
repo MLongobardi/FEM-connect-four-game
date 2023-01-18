@@ -1,4 +1,6 @@
-import adapter from '@sveltejs/adapter-auto';
+import preprocess from "svelte-preprocess";
+import autoprefixer from "autoprefixer";
+import adapter from "@sveltejs/adapter-auto";
 import path from "path";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -11,6 +13,17 @@ const config = {
 			$stores: path.resolve("./src/lib/stores/_exporter.js"),
 		},
 	},
+
+	preprocess: [
+		preprocess({
+			scss: {
+				prependData: '@use "src/variables.scss" as *;',
+			},
+			postcss: {
+				plugins: [autoprefixer()]
+			}
+		}),
+	],
 };
 
 export default config;

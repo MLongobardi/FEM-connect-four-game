@@ -13,10 +13,8 @@ function createSingleStore(query) {
 			stop = () => {
 				mq.removeEventListener("change", update);
 			};
-		} else {
-			console.log("mediaStore's '" + query + "' wasn't created because window doesn't exist!");
 		}
-		
+
 		return stop;
 	});
 }

@@ -15,9 +15,6 @@
 </div>
 
 <style>
-	:global(body) {
-		background: var(--purple);
-	}
 	.page {
 		display: flex;
 		flex-direction: column;

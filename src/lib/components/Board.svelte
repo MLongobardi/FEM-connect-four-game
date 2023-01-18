@@ -78,7 +78,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	.temp {
 		background: white;
 		padding: 20px;
@@ -89,30 +89,11 @@
 	.board-holder {
 		--currentCol: 0;
 	}
-	/*If Sass:
+	
 	@for $i from 1 through 6 {
 		.board-holder:has(.column-#{$i}:hover) {
 			--currentCol: #{$i};
 		}
-	}
-	*/
-	.board-holder:has(.column-1:hover) {
-		--currentCol: 1;
-	}
-	.board-holder:has(.column-2:hover) {
-		--currentCol: 2;
-	}
-	.board-holder:has(.column-3:hover) {
-		--currentCol: 3;
-	}
-	.board-holder:has(.column-4:hover) {
-		--currentCol: 4;
-	}
-	.board-holder:has(.column-5:hover) {
-		--currentCol: 5;
-	}
-	.board-holder:has(.column-6:hover) {
-		--currentCol: 6;
 	}
 
 	.marker {

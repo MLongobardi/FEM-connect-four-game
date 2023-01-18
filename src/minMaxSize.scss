@@ -1,0 +1,38 @@
+/**
+ * minMaxSize scales a value linearly from $min-size to $max-size depending on the screen width, using vw units.
+ * For example, if the screen size is at 33% of the way from $min-screen to $max-screen,
+ * the returned value will similarly be at 33% of the way from $min-size to $max-size.
+ * minMedMaxSize scales from min to med and then from med to max.
+ * Original idea from: 
+ * https://css-tricks.com/linearly-scale-font-size-with-css-clamp-based-on-the-viewport/
+ */
+
+@use "sass:math";
+
+@function minMaxSize($min-size, $max-size, $min-screen: 375px, $max-screen: 768px) {
+    //If you don't want to use px, all arguments must use the same unit
+    @if $min-size >= $max-size {
+        @error "Arguments should go from small to big";
+    }
+	
+	$slope: math.div($max-size - $min-size, $max-screen - $min-screen);
+    $yIntersection: $min-size - $min-screen * $slope;
+	
+	@return clamp(#{$min-size}, #{$yIntersection} + #{$slope * 100vw}, #{$max-size});
+}
+
+@function minMedMaxSize($min-size, $med-size, $max-size, $min-screen: 375px, $med-screen: 768px, $max-screen: 1440px) {
+    @if $min-size >= $med-size or $med-size >= $max-size {
+        @error "Arguments should go from small to big";
+    }
+    
+    $slope1: math.div($med-size - $min-size, $med-screen - $min-screen);
+    $yIntersection1: $min-size - $min-screen * $slope1;
+    $min-to-med: calc(#{$yIntersection1} + #{$slope1 * 100vw});
+    
+    $slope2: math.div($max-size - $med-size, $max-screen - $med-screen);
+    $yIntersection2: $med-size - $med-screen * $slope2;
+    $med-to-max: calc(#{$yIntersection2} + #{$slope2 * 100vw});
+    
+    @return clamp(clamp(#{$min-size},#{$min-to-med},#{$med-size}), #{$med-to-max}, #{$max-size});
+}

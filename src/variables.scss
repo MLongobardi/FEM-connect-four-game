@@ -1,0 +1,20 @@
+@import "minMaxSize.scss";
+
+%heading-L, %heading-M, %heading-S, %heading-XS  {
+    font-size: 56px;
+	line-height: 71px;
+    font-weight: bold;
+    color: black;
+}
+%heading-M {
+	font-size: 24px;
+	line-height: 31px;
+}
+%heading-S {
+	font-size: 20px;
+	line-height: 26px;
+}
+%heading-XS {
+	font-size: 16px;
+	line-height: 21px;
+}
