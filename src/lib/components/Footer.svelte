@@ -3,10 +3,11 @@
 	import { FixedTurnBackground } from "$comps";
 
 	let colors = ["var(--pink)", "var(--yellow)", "var(--dark-purple)"];
+	//$: console.log($gameStore.timer)
 </script>
 
 <footer style:--color={colors[$gameStore.winInfo.player]}>
-	<FixedTurnBackground color={$gameStore.currentPlayer == 0 ? "red" : "yellow"} />
+	<FixedTurnBackground color={$gameStore.currentPlayer == 0 ? "red" : "yellow"} time={$gameStore.timer.currentTime}/>
 	<div style="background: white">
 		TEMP
 		<button
@@ -15,6 +16,8 @@
 				if ($gameStore.currentMode == "PVC") gameStore.undoLastMove();
 			}}>undo last move</button
 		>
+		<button on:click={gameStore.startTimer}>start timer</button>
+		<button on:click={gameStore.pauseTimer}>pause timer</button>
 	</div>
 </footer>
 

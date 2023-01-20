@@ -1,12 +1,18 @@
 <script>
     import { frontStore, gameStore } from "$stores";
 	import { BigButton } from "$comps";
-	
+
 	function startPVPGame() {
-		gameStore.setMode("PVP");
+		gameStore.setModeAndStart("PVP");
 		frontStore.closeModal();
 	}
 </script>
+
+<svelte:head>
+	<link rel="preload" as="image" href="/images/logo.svg">
+	<link rel="preload" as="image" href="/images/player-vs-cpu.svg">
+	<link rel="preload" as="image" href="/images/player-vs-player.svg">
+</svelte:head>
 
 <div class="menu-box">
 	<img class="logo" src="/images/logo.svg" alt="logo" />
@@ -35,7 +41,7 @@
 		box-shadow: 0px 10px 0px black;
 		background: var(--purple);
 	}
-	
+
 	.logo {
 		margin-top: 20px;
 		margin-bottom: 56px;

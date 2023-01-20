@@ -3,8 +3,8 @@
 	import { BigButton } from "$comps";
 	
 	function startPVCGame(difficulty) {
-		gameStore.setMode("PVC");
         gameStore.setDifficulty(difficulty);
+		gameStore.setModeAndStart("PVC");
 		frontStore.closeModal(); //gets back to MenuBox
         frontStore.closeModal(); //closes MenuBox
 	}

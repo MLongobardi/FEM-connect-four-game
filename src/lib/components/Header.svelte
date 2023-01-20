@@ -1,9 +1,14 @@
 <script>
-	import { gameStore, mediaStore, frontStore } from "$stores";
+	import { gameStore, frontStore } from "$stores";
+
+	function handlePause() {
+		gameStore.pauseTimer();
+		frontStore.openModal("pause");
+	}
 </script>
 
 <header>
-	<button on:click={()=>{frontStore.openModal("pause")}}>MENU</button>
+	<button on:click={handlePause}>MENU</button>
 	<img src="/images/logo.svg" alt="logo"/>
 	<button on:click={gameStore.resetGame}>RESTART</button>
 </header>

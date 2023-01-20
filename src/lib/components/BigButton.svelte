@@ -12,7 +12,7 @@
 </script>
 
 <button style:background-color={bgColor} style:color={txtColor} on:click={func}>
-	<slot>Click me!</slot>
+	<slot>Empty button</slot>
 </button>
 
 <style>

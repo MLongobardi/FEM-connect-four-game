@@ -45,6 +45,7 @@
 		<div class="board-grid">
 			{#each $gameStore.board.table as row, j}
 				{#each row as cell, i}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<div
 						class="cell column-{i}"
 						id={"c" + j + i}
@@ -56,9 +57,11 @@
 									setTimeout(() => {
 										gameStore.playMove(getAIMove($gameStore, $gameStore.AIDepth));
 										blockMoves = false;
-									}, 500);
+									}, 800);
 								} else {
-									blockMoves = false;
+									setTimeout(()=>{
+										blockMoves = false;
+									}, 400);
 								}
 							}
 						}}

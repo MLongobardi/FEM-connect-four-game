@@ -1,7 +1,7 @@
 <script>
 	export let color = "red"; //or "yellow"
 	export let turnText = "YOUR TURN";
-	export let timeText = "15s";
+	export let time = 15;
 	$: textColor = color == "red" ? "#FFF" : "#000";
 	$: backgroundColor = color == "red" ? "#FD6687" : "#FFCE67";
 </script>
@@ -58,7 +58,7 @@
 				<tspan x="1.64" y="16">{turnText}</tspan>
 			</text>
             <text font-size="56" transform="translate(51 41)">
-				<tspan x=".872" y="77">{timeText}</tspan>
+				<tspan x="{0.872 + time < 10 ? 20 : 0}" y="77" >{time + "s"}</tspan>
 			</text>
         </g>
     </g>

@@ -4,14 +4,16 @@
 
     function handleContinue() {
         frontStore.closeModal();
+        gameStore.startTimer();
     }
     function handleRestart() {
         gameStore.resetGame();
         frontStore.closeModal();
+        //gameStore.startTimer();
     }
     function handleQuit() {
         gameStore.hardReset();
-        frontStore.openModal("menu")
+        frontStore.openModal("menu");
     }
 </script>
 

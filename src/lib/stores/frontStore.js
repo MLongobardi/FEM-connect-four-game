@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 const cleanState = {
-    currentModal: "menu",
+    currentModal: "",
     showModal: true,
 }
 
