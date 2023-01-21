@@ -13,7 +13,7 @@
 	<button on:click={gameStore.resetGame}>RESTART</button>
 </header>
 
-<style>
+<style lang="scss">
 	header {
 		display: flex;
 		margin-top: 20px;
@@ -24,16 +24,7 @@
 	}
 
 	button {
-		background: var(--dark-purple);
-		border-radius: 20px;
-		color: white;
-		border: none;
-		padding: 10px 20px;
-		font-weight: bold;
-		height: fit-content;
-	}
-	button:hover {
-		background: var(--pink)
+		@extend %small-button;
 	}
 	button:nth-of-type(1) {
 		margin-right: 22px;

@@ -113,7 +113,10 @@ function createStore() {
 			tempStore.update((draft) => {
 				tempStore.pauseTimer();
 				draft.currentMode = mode;
-				if (mode == "PVP") draft.timer.startTime = 15;
+				if (mode == "PVP") {
+					draft.timer.startTime = 30;
+					draft.timer.currentTime = 30;
+				}
 				tempStore.startTimer();
 				return draft;
 			});
@@ -125,18 +128,18 @@ function createStore() {
 		tempStore.update((draft) => {
 			if (difficulty == "easy") {
 				draft.AIDepth = 2;
-				draft.timer.startTime = 20;
-				draft.timer.currentTime = 20;
+				draft.timer.startTime = 45;
+				draft.timer.currentTime = 45;
 			}
 			if (difficulty == "normal") {
 				draft.AIDepth = 3;
-				draft.timer.startTime = 15;
-				draft.timer.currentTime = 15;
+				draft.timer.startTime = 30;
+				draft.timer.currentTime = 30;
 			}
 			if (difficulty == "hard") {
 				draft.AIDepth = 4;
-				draft.timer.startTime = 10;
-				draft.timer.currentTime = 10;
+				draft.timer.startTime = 20;
+				draft.timer.currentTime = 20;
 			}
 			return draft;
 		});

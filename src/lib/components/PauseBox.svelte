@@ -9,7 +9,6 @@
     function handleRestart() {
         gameStore.resetGame();
         frontStore.closeModal();
-        //gameStore.startTimer();
     }
     function handleQuit() {
         gameStore.hardReset();
@@ -24,16 +23,15 @@
 	<BigButton type="pink" func={handleQuit}>QUIT GAME</BigButton>
 </div>
 
-<style>
+<style lang="scss">
 	.pause-box {
+        @extend %box-shadow;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		width: 480px;
 		padding: 37px 0;
-		border: 3px solid black;
 		border-radius: 40px;
-		box-shadow: 0px 10px 0px black;
 		background: var(--purple);
 	}
     .pause-box :global(button) {

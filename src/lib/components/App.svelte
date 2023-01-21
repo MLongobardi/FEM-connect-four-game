@@ -1,10 +1,17 @@
 <script>
 	import { Header, Main, Footer, Overlay } from "$comps";
-	import { frontStore } from "$stores";
+	import { frontStore, gameStore } from "$stores";
 	import { onMount } from "svelte";
 
 	onMount(() => {
 		frontStore.openModal("menu"); //modals' in:fade transition triggers on $frontStore.currentModal changes
+
+		document.addEventListener("visibilitychange", (event) => {
+			if (document.visibilityState == "hidden" && $gameStore.timer.running) {
+				gameStore.pauseTimer();
+				frontStore.openModal("pause");
+			}
+		});
 	});
 </script>
 

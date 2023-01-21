@@ -82,13 +82,6 @@
 </div>
 
 <style lang="scss">
-	.temp {
-		background: white;
-		padding: 20px;
-		margin-top: 15px;
-		border-radius: 25px;
-	}
-
 	.board-holder {
 		--currentCol: 0;
 	}

@@ -1,5 +1,5 @@
 <script>
-	import { frontStore } from "$stores";
+	import { frontStore, gameStore } from "$stores";
 	import { MenuBox, PauseBox, RulesBox, DifficultyBox } from "$comps";
 	import { fade } from "svelte/transition";
 
@@ -13,6 +13,7 @@
 	
 	function handleClick() {
 		if ($frontStore.currentModal == "menu") return;
+		if ($frontStore.currentModal == "pause") gameStore.startTimer();
 		frontStore.closeModal();
 	}
 </script>

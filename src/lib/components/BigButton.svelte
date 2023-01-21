@@ -15,9 +15,10 @@
 	<slot>Empty button</slot>
 </button>
 
-<style>
+<style lang="scss">
 	button {
-		--shadow-color: black;
+		@extend %box-shadow-hoverable;
+		@extend %heading-M;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -25,16 +26,9 @@
 		width: 406px;
 		min-height: 78px;
 		padding: 0 17px 0 20px;
-		border: 3px solid var(--shadow-color);
 		border-radius: 20px;
-		box-shadow: 0px 10px 0px var(--shadow-color);
 		margin-top: 14px;
 		margin-bottom: 10px;
-		font-size: 24px;
-		font-weight: 700;
-	}
-	button:hover {
-		--shadow-color: var(--dark-purple);
 	}
 	button:active {
 		box-shadow: 0px 5px 0px var(--shadow-color);

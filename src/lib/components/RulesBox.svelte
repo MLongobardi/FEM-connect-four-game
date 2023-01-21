@@ -21,14 +21,13 @@
     </button>
 </div>
 
-<style>
+<style lang="scss">
 	.rules-box {
+        @extend %box-shadow;
 		width: 486px;
 		padding: 30px 34px 38px 34px;
 		box-sizing: border-box;
-		border: 3px solid black;
 		border-radius: 40px;
-		box-shadow: 0px 10px 0px black;
 		background: white;
         position: relative;
 	}

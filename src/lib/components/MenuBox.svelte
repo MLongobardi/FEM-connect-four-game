@@ -29,16 +29,15 @@
 	</BigButton>
 </div>
 
-<style>
+<style lang="scss">
 	.menu-box {
+		@extend %box-shadow;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		width: 480px;
 		padding: 47px 0;
-		border: 3px solid black;
 		border-radius: 40px;
-		box-shadow: 0px 10px 0px black;
 		background: var(--purple);
 	}
 

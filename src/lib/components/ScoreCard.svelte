@@ -2,31 +2,29 @@
     import { gameStore, mediaStore } from "$stores";
     export let mode = "PVP"; // "PVC"
     export let position = "left"; // "right"
-    /*
-    TODO: change h3 and h1 to spans and extend %heading-(L|S), because I think headings here aren't semantically correct
-    */
 </script>
 
 <div class="score-card {position}" class:big={$mediaStore.screen.desktop}>
     {#if position == "left"}
         {@const imgName = mode == "PVP" ? "player-one" : "you"}
         <img src="/images/{imgName}.svg" alt="{imgName}">
-        <h3 class="player-name">
+        <span class="player-name">
             {mode == "PVP" ? "PLAYER " + 1 : "YOU"}
-        </h3>
-        <h1 class="score">{$gameStore.scores[0]}</h1>
+        </span>
+        <span class="score">{$gameStore.scores[0]}</span>
     {:else if position == "right"}
         {@const imgName = mode == "PVP" ? "player-two" : "cpu"}
         <img src="/images/{imgName}.svg" alt="{imgName}">
-        <h3 class="player-name">
+        <span class="player-name">
             {mode == "PVP" ? "PLAYER " + 2 : "CPU"}
-        </h3>
-        <h1 class="score">{$gameStore.scores[1]}</h1>
+        </span>
+        <span class="score">{$gameStore.scores[1]}</span>
     {/if}
 </div>
 
-<style>
+<style lang="scss">
     .score-card {
+        @extend %box-shadow;
         position: relative;
         display: flex;
         flex-wrap: wrap;
@@ -35,9 +33,7 @@
         width: 45%;
         box-sizing: border-box;
         background: white;
-        border: 3px solid black;
         border-radius: 20px;
-        box-shadow: 0px 10px 0px black;
     }
     .score-card.big {
         flex-direction: column;
@@ -47,11 +43,16 @@
         height: 166px;
     }
 
-    h1, h3 {
-        margin: 0;
+    .right:not(.big) {
+        flex-direction: row-reverse;
     }
-    h1 {
+
+    .player-name {
+        @extend %heading-S;
         padding: 0 15px;
+    }
+    .score {
+        @extend %heading-L;
     }
 
     img {
