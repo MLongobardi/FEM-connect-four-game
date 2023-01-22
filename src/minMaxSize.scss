@@ -10,8 +10,8 @@
 @use "sass:math";
 
 @function minMaxSize($min-size, $max-size, $min-screen: 375px, $max-screen: 768px) {
-    //If you don't want to use px, all arguments must use the same unit
-    @if $min-size >= $max-size {
+    //$min-size and $max-size should be px, can be a negative value;
+    @if $min-size >= $max-size or $min-screen >= $max-screen {
         @error "Arguments should go from small to big";
     }
 	
@@ -22,17 +22,17 @@
 }
 
 @function minMedMaxSize($min-size, $med-size, $max-size, $min-screen: 375px, $med-screen: 768px, $max-screen: 1440px) {
-    @if $min-size >= $med-size or $med-size >= $max-size {
+    @if $min-size >= $med-size or $med-size >= $max-size or $min-screen >= $med-screen or $med-screen >= $max-screen {
         @error "Arguments should go from small to big";
     }
     
     $slope1: math.div($med-size - $min-size, $med-screen - $min-screen);
     $yIntersection1: $min-size - $min-screen * $slope1;
-    $min-to-med: calc(#{$yIntersection1} + #{$slope1 * 100vw});
+    $min-to-med: "#{$yIntersection1} + #{$slope1 * 100vw}";
     
     $slope2: math.div($max-size - $med-size, $max-screen - $med-screen);
     $yIntersection2: $med-size - $med-screen * $slope2;
-    $med-to-max: calc(#{$yIntersection2} + #{$slope2 * 100vw});
+    $med-to-max: "#{$yIntersection2} + #{$slope2 * 100vw}";
     
     @return clamp(clamp(#{$min-size},#{$min-to-med},#{$med-size}), #{$med-to-max}, #{$max-size});
 }

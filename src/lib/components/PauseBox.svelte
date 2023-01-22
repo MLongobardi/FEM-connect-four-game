@@ -29,8 +29,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 480px;
-		padding: 37px 0;
+		width: minMaxSize(335px, 480px);
+		padding: minMaxSize(17px, 37px) 0;
 		border-radius: 40px;
 		background: var(--purple);
 	}
@@ -41,6 +41,6 @@
     h1 {
         color: white;
         margin-top: 13px;
-        margin-bottom: 27px;
+        margin-bottom: minMaxSize(13px, 27px);
     }
 </style>

@@ -1,5 +1,5 @@
 <script>
-    import { frontStore, gameStore } from "$stores";
+    import { mediaStore, frontStore, gameStore } from "$stores";
 	import { BigButton } from "$comps";
 	
 	function startPVCGame(difficulty) {
@@ -10,7 +10,7 @@
 	}
 </script>
 
-<div class="difficulty-box">
+<div class="difficulty-box" class:big={!$mediaStore.screen.mobile}>
     <img src="/images/cpu.svg" alt="cpu" draggable="false"/>
 	<BigButton type="pink" func={()=>{startPVCGame("easy")}}>
 		<span>EASY</span>
@@ -25,14 +25,21 @@
 
 <style lang="scss">
 	.difficulty-box {
-		@extend %box-shadow;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: 480px;
+		justify-content: center;
+		height: 100vh;
+		width: 100vw;
+		background: var(--purple);
+	}
+
+	.difficulty-box.big {
+		@extend %box-shadow;
+		width: minMaxSize(335px, 480px);
+		height: unset;
 		padding: 47px 0;
 		border-radius: 40px;
-		background: var(--purple);
 	}
 
     .difficulty-box :global(button) {

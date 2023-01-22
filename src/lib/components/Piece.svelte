@@ -4,17 +4,17 @@
 	export let depth = 0, color = "", breakPoint = "(min-width: 670px)", win = false;
 </script>
 
-<div class="piece" class:animated={!$mediaStore.misc.prefersReducedMotion} style:--pos={depth + 1}>
+<span class="piece" class:animated={!$mediaStore.misc.prefersReducedMotion} style:--pos={depth + 1}>
 	<picture>
 		<source srcset="/images/counter-{color}-large.svg" media={breakPoint}>
 		<img src="/images/counter-{color}-small.svg" alt="counter-{color}" draggable="false" />
 	</picture>
 	{#if win}
-		<div in:fade={{ delay: 250, duration: 200 }} class="win-ring">
+		<span in:fade={{ delay: 250, duration: 200 }} class="win-ring">
 			<span style:--color={color == "red" ? "var(--pink)" : "var(--yellow)"} />
-		</div>
+		</span>
 	{/if}
-</div>
+</span>
 
 <style>
 	.piece {

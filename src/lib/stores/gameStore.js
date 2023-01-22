@@ -127,17 +127,17 @@ function createStore() {
 	tempStore.setDifficulty = (difficulty) => {
 		tempStore.update((draft) => {
 			if (difficulty == "easy") {
-				draft.AIDepth = 2;
+				draft.AIDepth = 3;
 				draft.timer.startTime = 45;
 				draft.timer.currentTime = 45;
 			}
 			if (difficulty == "normal") {
-				draft.AIDepth = 3;
+				draft.AIDepth = 4;
 				draft.timer.startTime = 30;
 				draft.timer.currentTime = 30;
 			}
 			if (difficulty == "hard") {
-				draft.AIDepth = 4;
+				draft.AIDepth = 5;
 				draft.timer.startTime = 20;
 				draft.timer.currentTime = 20;
 			}
@@ -152,7 +152,7 @@ function createStore() {
 			draft.timer.interval = setInterval(() => {
 				draft.timer.deltaTime += TIMER_TICK_RATE;
 				if (draft.timer.deltaTime >= 1000) {
-					draft.timer.deltaTime = 0;
+					draft.timer.deltaTime -= 1000;
 					tempStore.timerTick();
 				}
 			}, TIMER_TICK_RATE);
@@ -164,7 +164,6 @@ function createStore() {
 		tempStore.update((draft) => {
 			draft.timer.currentTime--;
 			if (draft.timer.currentTime <= 0) {
-				//tempStore.pauseTimer();
 				draft.currentPlayer = 1 - draft.currentPlayer;
 				draft.timer.currentTime = draft.timer.startTime;
 				if (draft.currentPlayer == 1 && draft.currentMode == "PVC") {

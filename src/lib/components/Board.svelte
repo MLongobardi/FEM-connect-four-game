@@ -1,5 +1,6 @@
 <script>
 	import { gameStore, mediaStore } from "$stores";
+	import { getValidMoves } from "$scripts/game-scripts.js";
 	import { getAIMove } from "$scripts/computer-ai.js";
 	import { Piece } from "$comps";
 
@@ -45,8 +46,8 @@
 		<div class="board-grid">
 			{#each $gameStore.board.table as row, j}
 				{#each row as cell, i}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<div
+					<button
+						disabled={blockMoves || !getValidMoves($gameStore.board).includes(i)}
 						class="cell column-{i}"
 						id={"c" + j + i}
 						on:click={() => {
@@ -74,7 +75,7 @@
 								win={$gameStore.winInfo.cells.includes(j + "," + i)}
 							/>
 						{/if}
-					</div>
+					</button>
 				{/each}
 			{/each}
 		</div>
@@ -82,10 +83,13 @@
 </div>
 
 <style lang="scss">
+	@use "sass:math";
+	$board-grid-horizontal-padding: 1.25%;
+
 	.board-holder {
 		--currentCol: 0;
 	}
-	
+
 	@for $i from 1 through 6 {
 		.board-holder:has(.column-#{$i}:hover) {
 			--currentCol: #{$i};
@@ -93,10 +97,11 @@
 	}
 
 	.marker {
-		--step: calc(13.92%);
+		$step: math.div(100% - 2 * $board-grid-horizontal-padding, 7); //width of a grid cell
+		--initial: calc(#{math.div($step, 2) + $board-grid-horizontal-padding} - #{math.div(38px, 2)}); //38px is the width of the marker
 		display: block;
 		visibility: var(--show);
-		margin-left: calc(33px + var(--step) * var(--currentCol));
+		margin-left: calc(var(--initial) + $step * var(--currentCol));
 		transition: margin-left 350ms;
 	}
 
@@ -120,7 +125,7 @@
 		width: 100%;
 		height: 100%;
 		display: grid;
-		padding: 1.8% 1.25%;
+		padding: 1.8% $board-grid-horizontal-padding;
 		padding-bottom: 8%;
 		box-sizing: border-box;
 		grid-template-columns: repeat(7, 1fr);
@@ -133,6 +138,11 @@
 	}
 
 	.cell {
+		/*reset button styles*/
+		background: none;
+		border: none;
+		padding: 0;
+		/*end reset*/
 		display: flex;
 		align-items: center;
 		justify-content: center;

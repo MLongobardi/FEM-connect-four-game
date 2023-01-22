@@ -24,8 +24,8 @@
 <style lang="scss">
 	.rules-box {
         @extend %box-shadow;
-		width: 486px;
-		padding: 30px 34px 38px 34px;
+		width: minMaxSize(335px, 486px);
+		padding: 30px minMaxSize(20px, 34px) 38px minMaxSize(20px, 34px);
 		box-sizing: border-box;
 		border-radius: 40px;
 		background: white;

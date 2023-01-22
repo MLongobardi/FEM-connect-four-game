@@ -23,7 +23,8 @@
 		justify-content: space-between;
 		align-items: center;
 		/*Can't use box-sizing: content-box because it would mess with padding, so width and height are increased by 6px to account for the border*/
-		width: 406px;
+		width: minMaxSize(341px, 406px);
+		max-width: 89.85%;
 		min-height: 78px;
 		padding: 0 17px 0 20px;
 		border-radius: 20px;
