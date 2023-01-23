@@ -22,7 +22,7 @@ const cleanState = {
 	moveHistory: "",
 	gameOver: false,
 	winInfo: { player: 2, cells: [] },
-	scores: [0, 0, 0], //red wins, yellow wins, draws
+	scores: [12, 23, 0], //red wins, yellow wins, draws
 	lastWinner: "",
 	AIDepth: 5,
 	timer: {

@@ -44,4 +44,9 @@
 		transition-delay: 250ms;
 		margin-top: calc(-1 * var(--neg-margin));
 	}
+
+	footer :global(svg) {
+		position: relative;
+		z-index: 2;
+	}
 </style>

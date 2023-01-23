@@ -1,5 +1,23 @@
 import { readable, derived } from "svelte/store";
-import { mediaQueries } from "$lib/myConfig.js"
+import { mediaQueries } from "$lib/myConfig.js";
+
+function keyToClassName(key) {
+	if (!mediaQueries.screen[key].includes("min-width")) return ""; //no class for the mobile media query (which is the default style, mobile-first)
+	return key
+		.split(/(?=[A-Z])/) //multipleWordKey => ["multiple", "Word", "Key"]
+		.map((word) => word.substring(0, 3).toLowerCase()) //["multiple", "Word", "Key"] => ["mul", "wor", "key"]
+		.join("-"); //["mul", "wor", "key"] => mul-wor-key
+}
+
+const classStrings = Object.fromEntries(
+	Object.keys(mediaQueries.screen).map((key, i, arr) => [
+		key,
+		arr
+			.map(keyToClassName)
+			.slice(0, i + 1)
+			.join(" "),
+	])
+);
 
 function createSingleStore(query) {
 	return readable(null, (set) => {
@@ -28,7 +46,7 @@ function createGroupStore(queries) {
 		const objectToReturn = {};
 		Object.keys(queries).forEach((key, i) => {
 			objectToReturn[key] = $stores[i];
-        });
+		});
 
 		return objectToReturn;
 	});
@@ -38,9 +56,11 @@ const screenStore = createGroupStore(mediaQueries.screen);
 const miscStore = createGroupStore(mediaQueries.misc);
 
 const mediaStore = derived([screenStore, miscStore], ([$screen, $misc]) => {
+	let currentScreen = Object.keys($screen).find((key) => $screen[key] == true) || "";
 	return {
 		screen: $screen,
-		currentScreen: Object.keys($screen).find((k) => $screen[k] == true) || "",
+		currentScreen: currentScreen,
+		screenClassList: classStrings[currentScreen] || "",
 		misc: $misc,
 	};
 });

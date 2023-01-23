@@ -1,4 +1,9 @@
 <script>
+	/**
+	 * Don't add a <style> tag to this component, or svelte will add its scoping classes
+	 * And the html validator says that, for example, <feComposite> shouldn't have a class
+	 * Style from the parent with .parent-name :global(svg) {}
+	 */
 	export let color = "red"; //or "yellow"
 	export let turnText = "YOUR TURN";
 	export let time = 15;
@@ -63,10 +68,3 @@
         </g>
     </g>
 </svg>
-
-<style>
-	svg {
-		position: relative;
-		z-index: 2;
-	}
-</style>

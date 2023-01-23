@@ -4,7 +4,7 @@
     export let position = "left"; // "right"
 </script>
 
-<div class="score-card {position}" class:big={$mediaStore.screen.desktop}>
+<div class="score-card {position} {$mediaStore.screenClassList}">
     {#if position == "left"}
         {@const imgName = mode == "PVP" ? "player-one" : "you"}
         <img src="/images/{imgName}.svg" alt="{imgName}">
@@ -23,8 +23,11 @@
 </div>
 
 <style lang="scss">
+    $img-horizontal-offset: 27px; /*half of img width*/
+
     .score-card {
         @extend %box-shadow;
+        margin-left: $img-horizontal-offset - 5px;
         position: relative;
         display: flex;
         flex-wrap: wrap;
@@ -35,39 +38,53 @@
         background: white;
         border-radius: 20px;
     }
-    .score-card.big {
+    .score-card.right {
+        margin-left: 0;
+        margin-right: $img-horizontal-offset - 5px;
+    }
+    .score-card.des {
         flex-direction: column;
         justify-content: center;
+        margin: 0;
         padding-top: 20px;
         width: 147px;
         height: 166px;
     }
 
-    .right:not(.big) {
+    .right:not(.des) {
         flex-direction: row-reverse;
     }
 
     .player-name {
-        @extend %heading-S;
+        @extend %heading-XS;
         padding: 0 15px;
     }
+    :is(.tab, .lar-tab, .des) .player-name {
+        @extend %heading-S;
+    }
+
     .score {
+        /*non-standard font-size*/
+        font-size: 32px;
+        line-height: 41px;
+        font-weight: bold;
+        color: black;
+    }
+    :is(.tab, .lar-tab, .des) .score {
         @extend %heading-L;
     }
 
     img {
-        --horizontal-offset: -27px;
         position: absolute;
-    }
-    .left img {
-        left: var(--horizontal-offset)
+        left: -$img-horizontal-offset;
     }
     .right img {
-        right: var(--horizontal-offset)
+        left: unset;
+        right: -$img-horizontal-offset;
     }
-    .big img {
+    .des img {
         left: unset;
         right: unset;
-        top: -29.5px;
+        top: -29.5px; //*half of img height*/
     }
 </style>

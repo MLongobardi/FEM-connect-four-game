@@ -23,7 +23,7 @@
 			/>
 		</div>
 	{/if}
-	<div class="board">
+	<div class="board" style:margin-top={$mediaStore.misc.hoverable ? "0" : "20px"}>
 		<picture>
 			<source srcset="/images/board-layer-white-large.svg" media={boardBreakPoint} />
 			<img

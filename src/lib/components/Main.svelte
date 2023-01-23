@@ -17,7 +17,7 @@
 	//testAlgTime(5, false)
 </script>
 
-{#if $mediaStore.screen.desktop == true}
+{#if $mediaStore.screen.desktop}
 	<main class="big">
 		<ScoreCard mode={$gameStore.currentMode} position="left" />
 		<Board />
@@ -34,16 +34,17 @@
 {/if}
 
 <style>
-	main.big {
-		display: grid;
-		grid-template-columns: 180px 1fr 180px;
-		justify-items: center;
-		align-items: center;
-	}
-
 	.score-holder {
 		display: flex;
 		justify-content: space-between;
 		margin: 15px 0;
+	}
+	
+	main.big {
+		display: grid;
+		grid-template-columns: repeat(3, min-content);
+		gap: 60px;
+		justify-items: center;
+		align-items: center;
 	}
 </style>
