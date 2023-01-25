@@ -1,6 +1,6 @@
 <script>
 	import { frontStore, gameStore } from "$stores";
-	import { MenuBox, PauseBox, RulesBox, DifficultyBox } from "$comps";
+	import { MenuBox, PauseBox, RulesBox, DifficultyBox, Loading } from "$comps";
 	import { fade } from "svelte/transition";
 
 	const colorArray = [
@@ -30,6 +30,8 @@
 				<RulesBox />
 			{:else if $frontStore.currentModal == "difficulty"}
 				<DifficultyBox />
+			{:else}
+				<Loading />
 			{/if}
 		</div>
 	{/key}
@@ -48,7 +50,7 @@
 		z-index: 10;
 	}
 
-	:global(body):has(.overlay) {
+	:global(body):has(.overlay) { /*TEMP, check if dialog takes care of it*/
 		overflow-y: hidden;
 	}
 </style>

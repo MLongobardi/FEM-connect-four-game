@@ -6,7 +6,8 @@
 	font-weight: 100 1000;
 }
 
-:root {
+:root, ::backdrop {
+    //dialog::background wouldn't inherit variables set in :root
     --dark-purple: #5c2ddf;
     --purple: #7945ff;
     --pink: #fd6687;

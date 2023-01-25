@@ -1,7 +1,10 @@
 import { writable } from "svelte/store";
 import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 import { getAIMove } from "$scripts/computer-ai.js";
-//make a method to make an AI move
+//TODO
+//make a method to make an AI move ??
+//gameOver's starting value should be set to true, setModeAndStart should set it to false
+//timer's state should take into consideration gameOver's value ?
 
 const TIMER_TICK_RATE = 50;
 

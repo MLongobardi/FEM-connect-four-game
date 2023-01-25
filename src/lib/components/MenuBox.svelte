@@ -8,12 +8,6 @@
 	}
 </script>
 
-<svelte:head>
-	<link rel="preload" as="image" href="/images/logo.svg">
-	<link rel="preload" as="image" href="/images/player-vs-cpu.svg">
-	<link rel="preload" as="image" href="/images/player-vs-player.svg">
-</svelte:head>
-
 <div class="menu-box" class:big={!$mediaStore.screen.mobile}>
 	<img class="logo" src="/images/logo.svg" alt="logo" />
 	<BigButton type="pink" func={()=>{frontStore.openModal("difficulty")}}>

@@ -17,3 +17,5 @@ export { default as RulesBox } from "./RulesBox.svelte";
 export { default as DifficultyBox } from "./DifficultyBox.svelte";
 export { default as ScoreCard } from "./ScoreCard.svelte";
 export { default as WinBox } from "./WinBox.svelte";
+export { default as Loading } from "./Loading.svelte";
+export { default as Dialog } from "./Dialog.svelte";
