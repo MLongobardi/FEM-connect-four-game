@@ -1,15 +1,22 @@
 <script>
 	import { gameStore, mediaStore } from "$stores";
+	import { mediaQueries } from "$lib/myConfig.js";
 	import { getValidMoves } from "$scripts/game-scripts.js";
 	import { getAIMove } from "$scripts/computer-ai.js";
 	import { Piece } from "$comps";
 
 	//consider using myConfig.js values, so it synchronizes with mediaStore
-	const boardBreakPoint = "(min-width: 670px)";
+	const boardBreakPoint = mediaQueries.screen.tablet.substring(
+		0,
+		mediaQueries.screen.tablet.indexOf(")") + 1
+	);
 	let blockMoves = false;
 
 	$: markerColor = $gameStore.currentPlayer == 0 ? "red" : "yellow";
-	$: showMarker = $gameStore.gameOver || ($gameStore.currentPlayer == 1 && $gameStore.currentMode == "PVC") ? "hidden" : "visible";
+	$: showMarker =
+		$gameStore.gameOver || ($gameStore.currentPlayer == 1 && $gameStore.currentMode == "PVC")
+			? "hidden"
+			: "visible";
 </script>
 
 <div class="board-holder">
@@ -23,7 +30,7 @@
 			/>
 		</div>
 	{/if}
-	<div class="board" style:margin-top={$mediaStore.misc.hoverable ? "0" : "20px"}>
+	<div class="board">
 		<picture>
 			<source srcset="/images/board-layer-white-large.svg" media={boardBreakPoint} />
 			<img
@@ -60,7 +67,7 @@
 										blockMoves = false;
 									}, 800);
 								} else {
-									setTimeout(()=>{
+									setTimeout(() => {
 										blockMoves = false;
 									}, 400);
 								}
@@ -88,6 +95,8 @@
 
 	.board-holder {
 		--currentCol: 0;
+		width: fit-content;
+		margin: auto;
 	}
 
 	@for $i from 1 through 6 {
@@ -98,7 +107,9 @@
 
 	.marker {
 		$step: math.div(100% - 2 * $board-grid-horizontal-padding, 7); //width of a grid cell
-		--initial: calc(#{math.div($step, 2) + $board-grid-horizontal-padding} - #{math.div(38px, 2)}); //38px is the width of the marker
+		--initial: calc(
+			#{math.div($step, 2) + $board-grid-horizontal-padding} - #{math.div(38px, 2)}
+		); //38px is the width of the marker
 		display: block;
 		visibility: var(--show);
 		margin-left: calc(var(--initial) + $step * var(--currentCol));
@@ -106,12 +117,16 @@
 	}
 
 	img {
+		max-width: 95vw;
 		user-select: none;
 	}
 
 	.board {
 		position: relative;
 		margin-bottom: 5px;
+	}
+	.board-holder:has(.marker-box) .board {
+		margin-top: 20px;
 	}
 
 	.board-grid,

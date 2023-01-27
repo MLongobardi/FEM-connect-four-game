@@ -21,8 +21,7 @@
 <style lang="scss">
 	.win-box {
 		@extend %box-shadow;
-		position: relative;
-		z-index: 2;
+		@extend %hover-on-footer;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

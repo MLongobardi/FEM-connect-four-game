@@ -15,6 +15,7 @@
 			time={$gameStore.timer.currentTime}
 		/>
 	{/if}
+	<!--
 	<div style="background: white; position: absolute; z-index: 1; width: 100%; top: 50%;">
 		TEMP
 		<button
@@ -26,27 +27,26 @@
 		<button on:click={gameStore.startTimer}>start timer</button>
 		<button on:click={gameStore.pauseTimer}>pause timer</button>
 	</div>
+	-->
 </footer>
 
-<style>
+<style lang="scss">
 	footer {
-		flex-grow: 1;
-		--neg-margin: 40px;
-		position: relative;
+		flex-basis: minMaxSize(234px, 200px, 768px, 1440px); //height
+		flex-grow: 0.1; //very slightly tweaks height;
 		display: flex;
 		justify-content: center;
 		align-items: flex-start;
 		border-radius: 60px 60px 0 0;
 		background-color: var(--color);
-		height: calc(160px + var(--neg-margin));
+		
 		width: 100%;
 		transition: background-color 200ms;
 		transition-delay: 250ms;
-		margin-top: calc(-1 * var(--neg-margin));
+		margin-top: minMaxSize(-15px, -50px)
 	}
 
 	footer :global(svg) {
-		position: relative;
-		z-index: 2;
+		@extend %hover-on-footer;
 	}
 </style>

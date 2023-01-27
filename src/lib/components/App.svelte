@@ -8,7 +8,7 @@
 	onMount(() => {
 		document.addEventListener("visibilitychange", () => {
 			if (document.visibilityState == "hidden" && $gameStore.timer.running) {
-				pauseDialog.myShowModal();
+				//pauseDialog.myShowModal();
 			}
 		});
 

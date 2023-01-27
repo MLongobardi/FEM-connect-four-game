@@ -21,18 +21,36 @@
 	@return clamp(#{$min-size}, #{$yIntersection} + #{$slope * 100vw}, #{$max-size});
 }
 
+@function minMaxSize($size-at-min, $size-at-max, $min-screen: 375px, $max-screen: 768px) {
+    //$size-at-min and $size-at-max should be px, can be negative values and can go from big to small;
+    @if $size-at-min == $size-at-max {
+        @return $size-at-min;
+    }
+    @if $min-screen >= $max-screen {
+        @error "$max-screen should be higher than $min-screen";
+    }
+	
+	$slope: math.div($size-at-max - $size-at-min, $max-screen - $min-screen);
+    $y-intersection: $size-at-min - $min-screen * $slope;
+    
+    $smallest-size: math.min($size-at-min, $size-at-max);
+    $biggest-size: math.max($size-at-min, $size-at-max);
+
+	@return #{clamp(#{$smallest-size}, #{$y-intersection} + #{$slope * 100vw}, #{$biggest-size})};
+}
+
 @function minMedMaxSize($min-size, $med-size, $max-size, $min-screen: 375px, $med-screen: 768px, $max-screen: 1440px) {
     @if $min-size >= $med-size or $med-size >= $max-size or $min-screen >= $med-screen or $med-screen >= $max-screen {
         @error "Arguments should go from small to big";
     }
     
     $slope1: math.div($med-size - $min-size, $med-screen - $min-screen);
-    $yIntersection1: $min-size - $min-screen * $slope1;
-    $min-to-med: "#{$yIntersection1} + #{$slope1 * 100vw}";
+    $y-intersection1: $min-size - $min-screen * $slope1;
+    $min-to-med: "#{$y-intersection1} + #{$slope1 * 100vw}";
     
     $slope2: math.div($max-size - $med-size, $max-screen - $med-screen);
-    $yIntersection2: $med-size - $med-screen * $slope2;
-    $med-to-max: "#{$yIntersection2} + #{$slope2 * 100vw}";
+    $y-intersection2: $med-size - $med-screen * $slope2;
+    $med-to-max: "#{$y-intersection2} + #{$slope2 * 100vw}";
     
     @return clamp(clamp(#{$min-size},#{$min-to-med},#{$med-size}), #{$med-to-max}, #{$max-size});
 }

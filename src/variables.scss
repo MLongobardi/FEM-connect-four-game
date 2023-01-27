@@ -45,3 +45,9 @@
 		background: var(--pink);
 	}
 }
+
+%hover-on-footer {
+	position: relative;
+	z-index: 2;
+	top: minmaxSize(-10px, -3px);
+}

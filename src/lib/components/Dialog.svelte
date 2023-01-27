@@ -23,7 +23,7 @@
 	 *
 	 * Note: the dialog backdrop doesn't inherit anything, so it can only use css variables declared in ::backdrop
 	 */
-
+	
 	export let dialog;
 	export let startOpen = false;
 	export let useTimer = false;
@@ -95,7 +95,7 @@
 		width: minMaxSize(335px, 480px);
 		height: fit-content;
 	}
-	.dialog > :global(div) {
+	dialog > :global(div) {
 		margin: 0 !important; /*same as above*/
 		display: flex;
 		flex-direction: column;
@@ -106,7 +106,7 @@
 		padding: 47px 0;
 		box-sizing: border-box;
 	}
-	.dialog.windowed > :global(div) {
+	dialog.windowed > :global(div), dialog :global(.never-fullscreen) {
 		border-radius: 35px; //with dialog's overflow, fixes some white color at the borders
 	}
 

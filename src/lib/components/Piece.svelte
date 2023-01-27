@@ -1,10 +1,10 @@
 <script>
 	import { fade } from "svelte/transition";
 	import { mediaStore } from "$stores"
-	export let depth = 0, color = "", breakPoint = "(min-width: 670px)", win = false;
+	export let depth = 0, color = "", breakPoint = "(min-width: 640px)", win = false;
 </script>
 
-<span class="piece" class:animated={!$mediaStore.misc.prefersReducedMotion} style:--pos={depth + 1}>
+<span class="piece" class:big={!$mediaStore.screen.mobile} class:animated={!$mediaStore.misc.prefersReducedMotion} style:--pos={depth + 1}>
 	<picture>
 		<source srcset="/images/counter-{color}-large.svg" media={breakPoint}>
 		<img src="/images/counter-{color}-small.svg" alt="counter-{color}" draggable="false" />
@@ -19,6 +19,10 @@
 <style>
 	.piece {
 		position: relative; /*necessary for .win-ring's percentages*/
+		max-width: 87.87%;
+	}
+	.piece.big {
+		max-width: 79.52%;
 	}
 	.piece.animated {
 		--drop-duration: calc(70ms * var(--pos));
@@ -32,6 +36,7 @@
 	.piece img {
 		display: block; /*.piece has 5px more height without this*/
         user-select: none;
+		width: 100%;
 	}
 
 	.win-ring {
