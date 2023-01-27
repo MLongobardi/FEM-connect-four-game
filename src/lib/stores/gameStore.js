@@ -3,8 +3,6 @@ import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 import { getAIMove } from "$scripts/computer-ai.js";
 //TODO
 //make a method to make an AI move ??
-//gameOver's starting value should be set to true, setModeAndStart should set it to false
-//timer's state should take into consideration gameOver's value ?
 
 const TIMER_TICK_RATE = 50;
 
@@ -23,15 +21,15 @@ const cleanState = {
 	currentPlayer: 0,
 	currentMode: "PVP", // or "PVC"
 	moveHistory: "",
-	gameOver: false,
+	gameOver: true,
 	winInfo: { player: 2, cells: [] },
 	scores: [12, 23, 0], //red wins, yellow wins, draws
 	lastWinner: "",
 	AIDepth: 5,
 	timer: {
-		startTime: 15,
+		startTime: 30,
 		running: false,
-		currentTime: 15,
+		currentTime: 30,
 		deltaTime: 0,
 		interval: "",
 	},
@@ -97,6 +95,7 @@ function createStore() {
 			draft.gameOver = false;
 			draft.winInfo = { player: 2, cells: [] };
 			draft.timer.currentTime = draft.timer.startTime;
+			draft.timer.deltaTime = 0;
 			return draft;
 		});
 		tempStore.startTimer();
@@ -106,6 +105,7 @@ function createStore() {
 		tempStore.resetGame();
 		tempStore.pauseTimer();
 		tempStore.update((draft) => {
+			draft.gameOver = true;
 			draft.scores = [0, 0, 0];
 			return draft;
 		});
@@ -113,17 +113,17 @@ function createStore() {
 
 	tempStore.setModeAndStart = (mode) => {
 		if (mode == "PVP" || mode == "PVC") {
+			tempStore.pauseTimer();
 			tempStore.update((draft) => {
-				tempStore.pauseTimer();
 				draft.currentMode = mode;
 				if (mode == "PVP") {
 					draft.timer.startTime = 30;
 					draft.timer.currentTime = 30;
 				}
-				tempStore.startTimer();
+				draft.gameOver = false;
 				return draft;
 			});
-			
+			tempStore.startTimer();
 		}
 	};
 
@@ -150,7 +150,7 @@ function createStore() {
 
 	tempStore.startTimer = () => {
 		tempStore.update((draft) => {
-			if (draft.timer.running) return draft;
+			if (draft.timer.running || draft.gameOver) return draft;
 			draft.timer.running = true;
 			draft.timer.interval = setInterval(() => {
 				draft.timer.deltaTime += TIMER_TICK_RATE;

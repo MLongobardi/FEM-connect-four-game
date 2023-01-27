@@ -1,8 +1,8 @@
 <script>
-    import { frontStore } from "$stores";
+    export let thisDialog;
 </script>
 
-<div class="rules-box">
+<div class="rules-box never-fullscreen">
 	<h1>RULES</h1>
 	<h3>OBJECTIVE</h3>
 	<p>
@@ -16,31 +16,31 @@
 		<li>The game ends when there is a 4-in-a-row or a stalemate.</li>
 		<li>The starter of the previous game goes second on the next game.</li>
 	</ol>
-    <button class="close" on:click={frontStore.closeModal}>
+    <button class="close" on:click={()=>{thisDialog.myClose()}}>
         <img src="/images/icon-check.svg" alt="close">
     </button>
 </div>
 
+
 <style lang="scss">
+    :global(dialog):has(> .rules-box)::backdrop {
+        background: var(--purple);
+    }
 	.rules-box {
-        @extend %box-shadow;
-		width: minMaxSize(335px, 486px);
-		padding: 30px minMaxSize(20px, 34px) 38px minMaxSize(20px, 34px);
-		box-sizing: border-box;
-		border-radius: 40px;
-		background: white;
-        position: relative;
+        --horizontal-padding: #{minMaxSize(21px, 34px)};
+		padding: 30px var(--horizontal-padding) 38px var(--horizontal-padding);
 	}
 
 	h1 {
 		text-align: center;
 		margin: 0;
+        margin-bottom: 29px;
 	}
 
 	h3 {
+        align-self: flex-start;
 		color: var(--purple);
 		margin: 0;
-        margin-top: 29px;
 	}
 
     p {
@@ -50,6 +50,7 @@
 
     ol {
         list-style: none;
+        margin: 0 0 8px -0.9rem;
         margin-left: -0.9rem;
     }
     li {
@@ -61,7 +62,7 @@
         color: black;
     }
 
-    .close {
+    button.close {
         position: absolute;
         left: calc(50% - 35px);
         bottom: calc(0% - 40px);

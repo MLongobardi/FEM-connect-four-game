@@ -1,36 +1,35 @@
 <script>
-	import { Header, Main, Footer, Overlay, Dialog } from "$comps";
-	import { frontStore, gameStore } from "$stores";
+	import { Header, Main, Footer, Loading, Dialog, MenuBox } from "$comps";
+	import { gameStore } from "$stores";
 	import { onMount } from "svelte";
-
+	
+	let loading = true;
+	let menuDialog, pauseDialog;
 	onMount(() => {
-		frontStore.openModal("menu"); //modals' in:fade transition triggers on $frontStore.currentModal changes
-		
-		document.addEventListener("visibilitychange", (event) => {
+		document.addEventListener("visibilitychange", () => {
 			if (document.visibilityState == "hidden" && $gameStore.timer.running) {
-				gameStore.pauseTimer();
-				frontStore.openModal("pause");
+				pauseDialog.myShowModal();
 			}
 		});
+
+		loading = false;
 	});
 </script>
 
 <div class="page">
-	{#if $frontStore.showModal}
-		<Overlay />
+	{#if loading}
+		<Loading />
 	{/if}
-	<div style="display: contents">
+
+	<Dialog startOpen let:dialog bind:dialog={menuDialog}>
+		<MenuBox thisDialog={dialog} />
+	</Dialog>
+	
 	<span style="flex-grow: 2;" />
-	<Header />
+	<Header menuDialog={menuDialog} bind:pauseDialog/>
 	<span style="flex-grow: 4;" />
 	<Main />
 	<Footer />
-	</div>
-	<!--
-	<Dialog let:dialog>
-		<button on:click={()=>{dialog.close()}}>ciao</button>
-	</Dialog>
-	-->
 </div>
 
 <style>

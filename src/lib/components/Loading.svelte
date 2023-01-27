@@ -1,12 +1,26 @@
-<h1>
-	Loading<span class="dot d1">.</span><span class="dot d2">.</span><span class="dot d3">.</span>
-</h1>
+<div class="overlay">
+	<h1>
+		Loading<span class="dot d1">.</span><span class="dot d2">.</span><span class="dot d3">.</span>
+	</h1>
+</div>
 
 <style>
+	.overlay {
+		display: flex;
+		background: var(--dark-purple); /*default*/
+		justify-content: center;
+		align-items: center;
+		width: 100vw;
+		height: 100vh;
+		position: fixed;
+		top: 0;
+		z-index: 10;
+	}
+
 	h1 {
 		color: white;
 	}
-	
+
 	.dot {
 		display: inline-block;
 		animation: jump;
@@ -20,7 +34,7 @@
 	.d3 {
 		animation-delay: -0.666s;
 	}
-	
+
 	@keyframes jump {
 		33% {
 			transform: translateY(0.1em);

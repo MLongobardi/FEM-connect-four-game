@@ -1,16 +1,17 @@
 <script>
-	import { gameStore, frontStore } from "$stores";
-
-	function handlePause() {
-		gameStore.pauseTimer();
-		frontStore.openModal("pause");
-	}
+	import { gameStore } from "$stores";
+	import { Dialog, PauseBox } from "$comps"
+	export let menuDialog;
+	export let pauseDialog;
 </script>
 
 <header>
-	<button on:click={handlePause}>MENU</button>
+	<button on:click={()=>{pauseDialog.myShowModal()}}>MENU</button>
 	<img src="/images/logo.svg" alt="logo"/>
 	<button on:click={gameStore.resetGame}>RESTART</button>
+	<Dialog useTimer let:dialog bind:dialog={pauseDialog}>
+		<PauseBox thisDialog={dialog} menuDialog={menuDialog}/>
+	</Dialog>
 </header>
 
 <style lang="scss">

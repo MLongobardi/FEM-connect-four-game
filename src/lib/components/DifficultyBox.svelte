@@ -1,16 +1,18 @@
 <script>
-    import { mediaStore, frontStore, gameStore } from "$stores";
+    import { gameStore } from "$stores";
 	import { BigButton } from "$comps";
+
+    export let thisDialog, menuDialog;
 	
 	function startPVCGame(difficulty) {
         gameStore.setDifficulty(difficulty);
 		gameStore.setModeAndStart("PVC");
-		frontStore.closeModal(); //gets back to MenuBox
-        frontStore.closeModal(); //closes MenuBox
+        menuDialog.myClose();
+        thisDialog.myClose();
 	}
 </script>
 
-<div class="difficulty-box" class:big={!$mediaStore.screen.mobile}>
+<div class="difficulty-box">
     <img src="/images/cpu.svg" alt="cpu" draggable="false"/>
 	<BigButton type="pink" func={()=>{startPVCGame("easy")}}>
 		<span>EASY</span>
@@ -24,22 +26,12 @@
 </div>
 
 <style lang="scss">
-	.difficulty-box {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		height: 100vh;
-		width: 100vw;
-		background: var(--purple);
-	}
+    :global(dialog):has(> .difficulty-box)::backdrop {
+        background: var(--dark-purple);
+    }
 
-	.difficulty-box.big {
-		@extend %box-shadow;
-		width: minMaxSize(335px, 480px);
-		height: unset;
-		padding: 47px 0;
-		border-radius: 40px;
+	.difficulty-box {
+		background: var(--purple);
 	}
 
     .difficulty-box :global(button) {
