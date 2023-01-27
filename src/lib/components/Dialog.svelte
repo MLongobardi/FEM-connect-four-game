@@ -12,7 +12,8 @@
 	 * </Dialog>
 	 * Inside SomeComponent, thisDialog is a reference to the dialog that contains SomeComponent, use it to call thisDialog.myClose() (after export let thisDialog)
 	 * In the component that calls Dialog, nextDialog is a reference to the opened dialog, use it to call nextDialog.myShowModal()
-	 * However, on:click={dialog.myClose} gives an Uncaught TypeError: Illegal invocation, so use an arrow function
+	 * 
+	 * Using on:click={dialog.close} gives an Uncaught TypeError: Illegal invocation (sometimes the custom methods as well), so call it with an arrow function
 	 *
 	 * All of Dialog's content should be wrapped into a single topmost div.
 	 * Give this div the never-fullscreen class to make it windowed even on mobile
@@ -104,7 +105,6 @@
 		width: 100%;
 		padding: 47px 0;
 		box-sizing: border-box;
-		
 	}
 	.dialog.windowed > :global(div) {
 		border-radius: 35px; //with dialog's overflow, fixes some white color at the borders
