@@ -50,7 +50,10 @@
 			/>
 		</picture>
 
-		<div class="board-grid" style:--hover-color={$gameStore.currentPlayer == 0 ? "var(--pink)" : "var(--yellow)"}>
+		<div
+			class="board-grid"
+			style:--hover-color={$gameStore.currentPlayer == 0 ? "var(--pink)" : "var(--yellow)"}
+		>
 			{#each $gameStore.board.table as row, j}
 				{#each row as cell, i}
 					<button
@@ -61,16 +64,16 @@
 							if (!blockMoves) {
 								blockMoves = true;
 								gameStore.playMove(i);
-								if ($gameStore.currentMode == "PVC") {
-									setTimeout(() => {
+								setTimeout(() => {
+									if ($gameStore.currentMode == "PVC") {
 										gameStore.playMove(getAIMove($gameStore, $gameStore.AIDepth));
+										setTimeout(() => {
+											blockMoves = false;
+										}, 500);
+									} else {
 										blockMoves = false;
-									}, 800);
-								} else {
-									setTimeout(() => {
-										blockMoves = false;
-									}, 400);
-								}
+									}
+								}, 600);
 							}
 						}}
 					>
@@ -166,7 +169,10 @@
 		justify-content: center;
 		transition: all 100ms;
 	}
-	.cell:not([disabled]):hover, .board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible  {
+	:is(
+			.cell:not([disabled]):hover,
+			.board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible
+		):not(:has(.piece)) {
 		background: var(--hover-color);
 		opacity: 0.8;
 	}
