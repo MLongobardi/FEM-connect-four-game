@@ -50,7 +50,7 @@
 			/>
 		</picture>
 
-		<div class="board-grid">
+		<div class="board-grid" style:--hover-color={$gameStore.currentPlayer == 0 ? "var(--pink)" : "var(--yellow)"}>
 			{#each $gameStore.board.table as row, j}
 				{#each row as cell, i}
 					<button
@@ -94,13 +94,13 @@
 	$board-grid-horizontal-padding: 1.25%;
 
 	.board-holder {
-		--currentCol: 0;
+		--currentCol: 3;
 		width: fit-content;
 		margin: auto;
 	}
 
-	@for $i from 1 through 6 {
-		.board-holder:has(.column-#{$i}:hover) {
+	@for $i from 0 through 6 {
+		.board-holder:has(.column-#{$i}:is(:focus-visible, :hover)) {
 			--currentCol: #{$i};
 		}
 	}
@@ -112,12 +112,13 @@
 		); //38px is the width of the marker
 		display: block;
 		visibility: var(--show);
+		//margin-top: 24px;
 		margin-left: calc(var(--initial) + $step * var(--currentCol));
 		transition: margin-left 350ms;
 	}
 
 	img {
-		max-width: 95vw;
+		max-width: 92vw;
 		user-select: none;
 	}
 
@@ -125,8 +126,8 @@
 		position: relative;
 		margin-bottom: 5px;
 	}
-	.board-holder:has(.marker-box) .board {
-		margin-top: 20px;
+	.board-holder:not(:has(.marker-box)) .board {
+		margin-top: 36px;
 	}
 
 	.board-grid,
@@ -145,6 +146,8 @@
 		box-sizing: border-box;
 		grid-template-columns: repeat(7, 1fr);
 		grid-template-rows: repeat(6, 1fr);
+		border-radius: 50px;
+		overflow: hidden; //with border-radius, hides corner cells' color on hover
 	}
 	.board-front {
 		position: relative;
@@ -161,5 +164,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		transition: all 100ms;
+	}
+	.cell:not([disabled]):hover, .board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible  {
+		background: var(--hover-color);
+		opacity: 0.8;
 	}
 </style>

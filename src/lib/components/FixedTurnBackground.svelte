@@ -50,7 +50,7 @@
 			id="b"
 		/>
     </defs>
-    <g transform="translate(3 2)" fill="none" fill-rule="evenodd">
+    <g transform="translate(3 2)" fill="none" fill-rule="evenodd" text-anchor="middle" alignment-baseline="middle">
 		<use fill="#000" filter="url(#a)" xlink:href="#b" />
         <path
 			stroke="#000"
@@ -58,7 +58,7 @@
 			d="M86.697 1.868a21.5 21.5 0 0 1 16.613-.03l75.96 31.65a21.478 21.478 0 0 1 9.62 7.92 21.478 21.478 0 0 1 3.61 11.925V130a21.433 21.433 0 0 1-6.297 15.203A21.433 21.433 0 0 1 171 151.5H20a21.433 21.433 0 0 1-15.203-6.297A21.433 21.433 0 0 1-1.5 130V53.28c0-4.326 1.296-8.44 3.589-11.893a21.478 21.478 0 0 1 9.568-7.923Z"
 			fill="{backgroundColor}"
 		/>
-        <g fill="{textColor}" font-family="SpaceGrotesk-Bold, Space Grotesk" font-weight="bold">
+        <g transform="translate(44)" fill="{textColor}" font-family="SpaceGrotesk-Bold, Space Grotesk" font-weight="bold">
             <text font-size="16" transform="translate(51 41)">
 				<tspan x="1.64" y="16">{turnText}</tspan>
 			</text>

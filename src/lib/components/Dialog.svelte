@@ -23,11 +23,11 @@
 	 *
 	 * Note: the dialog backdrop doesn't inherit anything, so it can only use css variables declared in ::backdrop
 	 */
-	
+
 	export let dialog;
 	export let startOpen = false;
 	export let useTimer = false;
-	
+
 	onMount(()=>{
 		//hijack native methods, until they add an on:open event
 		dialog.myShowModal = () => {

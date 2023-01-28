@@ -37,6 +37,7 @@
 	border-radius: 20px;
 	color: white;
 	border: none;
+	min-width: 108px;
 	padding: 10px 20px;
 	font-weight: bold;
 	cursor: pointer;
@@ -49,5 +50,5 @@
 %hover-on-footer {
 	position: relative;
 	z-index: 2;
-	top: minmaxSize(-10px, -3px);
+	top: minMaxSize(-10px, -3px);
 }

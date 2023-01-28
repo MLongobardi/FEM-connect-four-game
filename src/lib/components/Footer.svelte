@@ -3,7 +3,10 @@
 	import { FixedTurnBackground, WinBox } from "$comps";
 
 	let colors = ["var(--pink)", "var(--yellow)", "var(--dark-purple)"];
-	//$: console.log($gameStore.timer)
+	let texts = {
+		PVP: ["PLAYER 1'S TURN", "PLAYER 2'S TURN"],
+		PVC: ["YOUR TURN", "CPU'S TURN"],
+	};
 </script>
 
 <footer style:--color={colors[$gameStore.winInfo.player]}>
@@ -12,22 +15,10 @@
 	{:else}
 		<FixedTurnBackground
 			color={$gameStore.currentPlayer == 0 ? "red" : "yellow"}
+			turnText={texts[$gameStore.currentMode][$gameStore.currentPlayer]}
 			time={$gameStore.timer.currentTime}
 		/>
 	{/if}
-	<!--
-	<div style="background: white; position: absolute; z-index: 1; width: 100%; top: 50%;">
-		TEMP
-		<button
-			on:click={() => {
-				gameStore.undoLastMove();
-				if ($gameStore.currentMode == "PVC") gameStore.undoLastMove();
-			}}>undo last move</button
-		>
-		<button on:click={gameStore.startTimer}>start timer</button>
-		<button on:click={gameStore.pauseTimer}>pause timer</button>
-	</div>
-	-->
 </footer>
 
 <style lang="scss">
@@ -39,11 +30,11 @@
 		align-items: flex-start;
 		border-radius: 60px 60px 0 0;
 		background-color: var(--color);
-		
+
 		width: 100%;
 		transition: background-color 200ms;
 		transition-delay: 250ms;
-		margin-top: minMaxSize(-15px, -50px)
+		margin-top: minMaxSize(-15px, -50px);
 	}
 
 	footer :global(svg) {

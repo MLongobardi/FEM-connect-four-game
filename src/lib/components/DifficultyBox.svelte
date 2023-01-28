@@ -3,7 +3,7 @@
 	import { BigButton } from "$comps";
 
     export let thisDialog, menuDialog;
-	
+
 	function startPVCGame(difficulty) {
         gameStore.setDifficulty(difficulty);
 		gameStore.setModeAndStart("PVC");

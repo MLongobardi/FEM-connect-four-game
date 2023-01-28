@@ -2,7 +2,7 @@
 	import { gameStore } from "$stores";
 	import { BigButton } from "$comps";
     export let thisDialog, menuDialog;
-    
+
     function handleRestart() {
         gameStore.resetGame();
         thisDialog.myClose();

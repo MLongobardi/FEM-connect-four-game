@@ -1,8 +1,9 @@
 <script>
-	import { getAIMove } from "$scripts/computer-ai.js";
+	//import { getAIMove } from "$scripts/computer-ai.js";
 	import { gameStore, mediaStore } from "$stores";
 	import { Board, ScoreCard } from "$comps";
 
+	/*
 	function testAlgTime(algDepth, onlyOnce = true) {
 		gameStore.hardReset();
 		console.time("total");
@@ -15,6 +16,7 @@
 		console.timeEnd("total");
 	}
 	//testAlgTime(5, false)
+	*/
 </script>
 
 {#if $mediaStore.screen.desktop}
@@ -33,17 +35,18 @@
 	</main>
 {/if}
 
-<style>
+<style lang="scss">
 	.score-holder {
 		display: flex;
 		justify-content: space-between;
-		margin: 15px 0;
+		width: 95.5vw;
+		max-width: minMaxSize(633px, 750px, 768px, 1080px);
 	}
-	
+
 	main.big {
 		display: grid;
 		grid-template-columns: repeat(3, min-content);
-		gap: 60px;
+		gap: minMaxSize(30px, 90px, 1200px, 1680px); //is 60px at 1440px screen, as per the design
 		justify-items: center;
 		align-items: center;
 	}

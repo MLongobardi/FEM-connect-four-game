@@ -1,8 +1,6 @@
 import { writable } from "svelte/store";
 import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 import { getAIMove } from "$scripts/computer-ai.js";
-//TODO
-//make a method to make an AI move ??
 
 const TIMER_TICK_RATE = 50;
 
@@ -23,7 +21,7 @@ const cleanState = {
 	moveHistory: "",
 	gameOver: true,
 	winInfo: { player: 2, cells: [] },
-	scores: [12, 23, 0], //red wins, yellow wins, draws
+	scores: [0, 0, 0], //red wins, yellow wins, draws
 	lastWinner: "",
 	AIDepth: 5,
 	timer: {
@@ -192,7 +190,7 @@ function createStore() {
 	//remove standard store methods with object destructuring and return store
 	//eslint-disable-next-line
 	const { set, update, timerTick, ...returnStore } = tempStore;
-	return returnStore; //subscribe and custom store methods
+	return returnStore; //subscribe and exposed custom store methods
 }
 
 const gameStore = createStore();

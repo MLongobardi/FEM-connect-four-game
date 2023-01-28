@@ -3,7 +3,7 @@
 	import { BigButton, Dialog, RulesBox, DifficultyBox } from "$comps";
     export let thisDialog;
     let rulesDialog, difficultyDialog;
-	
+
 	function startPVPGame() {
 		gameStore.setModeAndStart("PVP");
 		thisDialog.myClose()

@@ -2,13 +2,13 @@
 	import { Header, Main, Footer, Loading, Dialog, MenuBox } from "$comps";
 	import { gameStore } from "$stores";
 	import { onMount } from "svelte";
-	
+
 	let loading = true;
 	let menuDialog, pauseDialog;
 	onMount(() => {
 		document.addEventListener("visibilitychange", () => {
 			if (document.visibilityState == "hidden" && $gameStore.timer.running) {
-				//pauseDialog.myShowModal();
+				pauseDialog.myShowModal();
 			}
 		});
 
@@ -25,9 +25,9 @@
 		<MenuBox thisDialog={dialog} />
 	</Dialog>
 	
-	<span style="flex-grow: 2;" />
+	<span style="flex-grow: 0.8; flex-basis: 30px;" />
 	<Header menuDialog={menuDialog} bind:pauseDialog/>
-	<span style="flex-grow: 4;" />
+	<span style="flex-grow: 1.2; flex-basis: 10px;" />
 	<Main />
 	<Footer />
 </div>
