@@ -151,7 +151,7 @@ let nextDialog;
 <Dialog let:dialog bind:dialog={nextDialog}>
     <SomeComponent thisDialog={dialog}>
 </Dialog>
-<button id="dialog-open" on:click={()=>{thisDialog.showModal()}}>Open</button>
+<button id="dialog-open" on:click={()=>{nextDialog.showModal()}}>Open</button>
 
 /*SomeComponent.svelte*/
 <script>
