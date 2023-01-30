@@ -8,7 +8,7 @@ let SIMULATED_ADVERSARY = 1;
 let	useCacheOne = true;
 
 const cacheOne = new MapWithMaxLength();
-const cacheTwo = new MapWithMaxLength(); //two caches are needed when two AIs play against each other
+const cacheTwo = new MapWithMaxLength(); //two caches are needed when two AIs play against each other, or when a turn is skipped because of the timer
 
 export function getAIMove(store, algDepth) {
 	if (AI != store.currentPlayer) useCacheOne = !useCacheOne;

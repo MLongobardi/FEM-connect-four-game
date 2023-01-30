@@ -12,7 +12,7 @@
 	 * </Dialog>
 	 * Inside SomeComponent, thisDialog is a reference to the dialog that contains SomeComponent, use it to call thisDialog.myClose() (after export let thisDialog)
 	 * In the component that calls Dialog, nextDialog is a reference to the opened dialog, use it to call nextDialog.myShowModal()
-	 * 
+	 *
 	 * Using on:click={dialog.close} gives an Uncaught TypeError: Illegal invocation (sometimes the custom methods as well), so call it with an arrow function
 	 *
 	 * All of Dialog's content should be wrapped into a single topmost div.
@@ -28,16 +28,16 @@
 	export let startOpen = false;
 	export let useTimer = false;
 
-	onMount(()=>{
+	onMount(() => {
 		//hijack native methods, until they add an on:open event
 		dialog.myShowModal = () => {
 			if (useTimer) gameStore.pauseTimer();
 			dialog.showModal();
-		}
+		};
 		dialog.myClose = () => {
 			if (useTimer) gameStore.startTimer();
 			dialog.close();
-		}
+		};
 
 		//setting the open attribute on the dialog doesn't put it at the top layer, showModal() is needed
 		if (startOpen) dialog.myShowModal();
@@ -51,9 +51,19 @@
 		 * DOESN'T close the dialog
 		 */
 		if (e.pointerType == "touch") {
-			dialog.addEventListener("touchend", dialog.myClose, { once: true });
+			dialog.addEventListener("touchend", (e) => {
+					let endTouch = e.changedTouches[0];
+					let endTarget = document.elementFromPoint(endTouch.clientX, endTouch.clientY);
+					if (endTarget == dialog) dialog.myClose();
+				}, { once: true });
 		} else {
-			dialog.addEventListener("pointerup", dialog.myClose, { once: true });
+			dialog.addEventListener(
+				"pointerup",
+				(e) => {
+					if (e.target == dialog) dialog.myClose();
+				},
+				{ once: true }
+			);
 		}
 	}
 </script>
@@ -106,7 +116,8 @@
 		padding: 47px 0;
 		box-sizing: border-box;
 	}
-	dialog.windowed > :global(div), dialog :global(.never-fullscreen) {
+	dialog.windowed > :global(div),
+	dialog :global(.never-fullscreen) {
 		border-radius: 35px; //with dialog's overflow, fixes some white color at the borders
 	}
 
@@ -115,7 +126,11 @@
 	}
 
 	@keyframes fade-in {
-		from {opacity: 0}
-		to {opacity: 1}
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 </style>
