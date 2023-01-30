@@ -41,7 +41,7 @@ I made a few changes to improve the gaming experience.
 
 ### Screenshot
 
-![](./screenshot.jpg)
+![](./screenshot.png)
 
 ### Links
 

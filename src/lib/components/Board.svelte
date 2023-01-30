@@ -170,7 +170,7 @@
 		justify-content: center;
 		transition: all 100ms;
 	}
-	:is(.cell:not([disabled]):hover, .board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible):not(:has(.piece)) {
+	.board-holder:has(.marker-box) :is(.cell:not([disabled]):hover, .board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible):not(:has(.piece)) {
 		/*selects :hover cells, :focus-visible cells when no other one is :hover, but not disabled cells or already occupied cells */
 		background: var(--hover-color);
 		opacity: 0.8;
