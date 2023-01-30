@@ -103,7 +103,8 @@
 	}
 
 	@for $i from 0 through 6 {
-		.board-holder:has(.column-#{$i}:is(:focus-visible, :hover)) {
+		.board-holder:has(.column-#{$i}:focus-visible):not(:has(.cell:hover)), .board-holder:has(.column-#{$i}:hover) {
+			/*updates marker position on :hover, and also on :focus-visible if no cell is on :hover*/
 			--currentCol: #{$i};
 		}
 	}
@@ -115,7 +116,7 @@
 		); //38px is the width of the marker
 		display: block;
 		visibility: var(--show);
-		//margin-top: 24px;
+		margin-bottom: 1px;
 		margin-left: calc(var(--initial) + $step * var(--currentCol));
 		transition: margin-left 350ms;
 	}
@@ -169,10 +170,8 @@
 		justify-content: center;
 		transition: all 100ms;
 	}
-	:is(
-			.cell:not([disabled]):hover,
-			.board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible
-		):not(:has(.piece)) {
+	:is(.cell:not([disabled]):hover, .board:not(:has(.cell:hover)) .cell:not([disabled]):focus-visible):not(:has(.piece)) {
+		/*selects :hover cells, :focus-visible cells when no other one is :hover, but not disabled cells or already occupied cells */
 		background: var(--hover-color);
 		opacity: 0.8;
 	}

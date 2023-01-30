@@ -63,7 +63,7 @@
 				<tspan x="1.64" y="16">{turnText}</tspan>
 			</text>
             <text font-size="56" transform="translate(51 41)">
-				<tspan x="{0.872 + time < 10 ? 20 : 0}" y="77" >{time + "s"}</tspan>
+				<tspan x="0.872" y="77" >{time + "s"}</tspan>
 			</text>
         </g>
     </g>
