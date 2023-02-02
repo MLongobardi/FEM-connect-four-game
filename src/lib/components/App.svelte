@@ -21,7 +21,8 @@
 		<Loading />
 	{/if}
 
-	<Dialog startOpen let:dialog bind:dialog={menuDialog}>
+	<!--<Dialog startOpen let:dialog bind:dialog={menuDialog}>-->
+	<Dialog let:dialog bind:dialog={menuDialog}>
 		<MenuBox thisDialog={dialog} />
 	</Dialog>
 	
