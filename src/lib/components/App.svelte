@@ -21,11 +21,10 @@
 		<Loading />
 	{/if}
 
-	<!--<Dialog startOpen let:dialog bind:dialog={menuDialog}>-->
-	<Dialog let:dialog bind:dialog={menuDialog}>
+	<Dialog startOpen let:dialog bind:dialog={menuDialog}>
 		<MenuBox thisDialog={dialog} />
 	</Dialog>
-	
+
 	<span style="flex-grow: 0.8; flex-basis: 30px;" />
 	<Header menuDialog={menuDialog} bind:pauseDialog/>
 	<span style="flex-grow: 1.2; flex-basis: 10px;" />

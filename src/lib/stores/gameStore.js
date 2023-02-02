@@ -19,8 +19,7 @@ const cleanState = {
 	currentPlayer: 0,
 	currentMode: "PVP", // or "PVC"
 	moveHistory: "",
-	//gameOver: true,
-	gameOver: false,
+	gameOver: true,
 	winInfo: { player: 2, cells: [] },
 	scores: [0, 0, 0], //red wins, yellow wins, draws
 	lastWinner: "",
