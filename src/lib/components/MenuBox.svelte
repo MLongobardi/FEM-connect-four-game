@@ -3,7 +3,7 @@
 	import { BigButton, Dialog, RulesBox, DifficultyBox } from "$comps";
     export let thisDialog;
     let rulesDialog, difficultyDialog;
-
+	
 	function startPVPGame() {
 		gameStore.setModeAndStart("PVP");
 		thisDialog.myClose()
@@ -11,7 +11,7 @@
 </script>
 
 <div class="menu-box">
-	<img class="logo" src="/images/logo.svg" alt="logo"/>
+	<img class="logo" src="/images/logo.svg" alt="game logo"/>
 	<BigButton type="pink" func={()=>{difficultyDialog.myShowModal()}}>
 		<span>PLAY VS CPU</span>
 		<img src="/images/player-vs-cpu.svg" alt="player-vs-cpu" draggable="false" />

@@ -8,7 +8,7 @@
 <header class:big={!$mediaStore.screen.mobile}>
 	<h1>Connect 4 Game</h1>
 	<button on:click={()=>{pauseDialog.myShowModal()}}>MENU</button>
-	<img src="/images/logo.svg" alt="logo"/>
+	<img src="/images/logo.svg" alt="game logo"/>
 	<button on:click={gameStore.resetGame}>RESTART</button>
 	<Dialog useTimer let:dialog bind:dialog={pauseDialog}>
 		<PauseBox thisDialog={dialog} menuDialog={menuDialog}/>
@@ -25,17 +25,7 @@
 	}
 
 	h1 {
-		/*For accessibility*/
-		font-size: 0;
-		width: 1px;
-		height: 1px;
-		display: inline-block;
-		overflow: hidden;
-		position: absolute!important;
-		border: 0!important;
-		padding: 0!important;
-		margin: 0!important;
-		clip: rect(1px,1px,1px,1px);
+		@extend %screen-reader-only;
 	}
 
 	img {

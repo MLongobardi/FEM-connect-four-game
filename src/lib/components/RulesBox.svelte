@@ -4,12 +4,12 @@
 
 <div class="rules-box never-fullscreen">
 	<h1>RULES</h1>
-	<h3>OBJECTIVE</h3>
+	<h2>OBJECTIVE</h2>
 	<p>
 		Be the first player to connect 4 of the same colored discs in a row (either vertically,
 		horizontally, or diagonally).
 	</p>
-	<h3>HOW TO PLAY</h3>
+	<h2>HOW TO PLAY</h2>
 	<ol>
 		<li>Red goes first in the first game.</li>
 		<li>Players must alternate turns, and only one disc can be dropped in each turn.</li>
@@ -37,7 +37,9 @@
         margin-bottom: 29px;
 	}
 
-	h3 {
+	h2 {
+        @extend %heading-S;
+        /*Should be heading-S because of design, but if I use h3 with no h2 there's an accessibility issue*/
         align-self: flex-start;
 		color: var(--purple);
 		margin: 0;

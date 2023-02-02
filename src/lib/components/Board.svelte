@@ -77,6 +77,7 @@
 							}
 						}}
 					>
+					<span class="visually-hidden">Play move: row {j}, column {i}</span>
 						{#if cell != 2}
 							<Piece
 								depth={j}
@@ -175,4 +176,8 @@
 		background: var(--hover-color);
 		opacity: 0.8;
 	}
+
+	.visually-hidden {
+		@extend %screen-reader-only;
+}
 </style>
