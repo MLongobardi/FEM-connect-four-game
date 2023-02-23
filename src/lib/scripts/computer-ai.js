@@ -2,7 +2,6 @@ import { MapWithMaxLength } from "$scripts/MapWithMaxLength";
 import { getBoardValue } from "$scripts/heuristics";
 import { getValidMoves, didSomeoneWin } from "$scripts/game-scripts.js";
 const USE_CACHE = true;
-const RANDOMIZE = false;
 let AI = 0;
 let SIMULATED_ADVERSARY = 1;
 let	useCacheOne = true;
@@ -15,14 +14,11 @@ export function getAIMove(store, algDepth) {
 	AI = store.currentPlayer;
 	SIMULATED_ADVERSARY = 1 - AI;
 	if (algDepth <= 0) throw "depth must be at least 1!";
-	if (RANDOMIZE && Math.random() < 0.05) {
-		console.log("random move!");
-		let m = getValidMoves(store.board);
-		return m[Math.floor(Math.random() * m.length)];
-	}
+	let actualDepth = algDepth;
+	if (Math.random() < store.missChance) actualDepth = Math.min(1, Math.floor(algDepth / 2));
 	return minimax(
 		store.board,
-		algDepth,
+		actualDepth,
 		Number.NEGATIVE_INFINITY,
 		Number.POSITIVE_INFINITY,
 		store.currentPlayer

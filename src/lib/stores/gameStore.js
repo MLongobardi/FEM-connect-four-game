@@ -23,7 +23,8 @@ const cleanState = {
 	winInfo: { player: 2, cells: [] },
 	scores: [0, 0, 0], //red wins, yellow wins, draws
 	lastWinner: "",
-	AIDepth: 5,
+	AIDepth: 3,
+	missChance: 0.2,
 	timer: {
 		startTime: 30,
 		running: false,
@@ -129,16 +130,19 @@ function createStore() {
 		tempStore.update((draft) => {
 			if (difficulty == "easy") {
 				draft.AIDepth = 3;
+				draft.missChance = 0.333;
 				draft.timer.startTime = 45;
 				draft.timer.currentTime = 45;
 			}
 			if (difficulty == "normal") {
 				draft.AIDepth = 4;
+				draft.missChance = 0.25;
 				draft.timer.startTime = 30;
 				draft.timer.currentTime = 30;
 			}
 			if (difficulty == "hard") {
 				draft.AIDepth = 5;
+				draft.missChance = 0.2;
 				draft.timer.startTime = 20;
 				draft.timer.currentTime = 20;
 			}
