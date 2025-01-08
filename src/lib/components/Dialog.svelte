@@ -28,14 +28,23 @@
 	export let startOpen = false;
 	export let useTimer = false;
 
+	function handleEsc(e) {
+		if (e.key == "Escape") {
+			if (startOpen) e.preventDefault();
+			else gameStore.startTimer();
+		}
+	}
+
 	onMount(() => {
 		//hijack native methods, until they add an on:open event
 		dialog.myShowModal = () => {
 			if (useTimer) gameStore.pauseTimer();
+			dialog.addEventListener("keydown", handleEsc);
 			dialog.showModal();
 		};
 		dialog.myClose = () => {
 			if (useTimer) gameStore.startTimer();
+			dialog.removeEventListener("keydown", handleEsc);
 			dialog.close();
 		};
 
@@ -51,11 +60,15 @@
 		 * DOESN'T close the dialog
 		 */
 		if (e.pointerType == "touch") {
-			dialog.addEventListener("touchend", (e) => {
+			dialog.addEventListener(
+				"touchend",
+				(e) => {
 					let endTouch = e.changedTouches[0];
 					let endTarget = document.elementFromPoint(endTouch.clientX, endTouch.clientY);
 					if (endTarget == dialog) dialog.myClose();
-				}, { once: true });
+				},
+				{ once: true }
+			);
 		} else {
 			dialog.addEventListener(
 				"pointerup",
